@@ -10,7 +10,7 @@ class SettingsRepo {
   ColorTheme get theme => _getTheme();
 
   ColorTheme _getTheme() {
-    String themeName = settingsBox.get(_theme);
+    String themeName = settingsBox.get(_theme, defaultValue: 'light');
     return getTheme(themeName);
   }
 
