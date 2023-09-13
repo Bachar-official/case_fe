@@ -6,6 +6,8 @@ import 'package:case_fe/feature/apps_screen/apps_manager.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
 import 'package:case_fe/feature/home_screen/home_manager.dart';
 import 'package:case_fe/feature/home_screen/home_state_holder.dart';
+import 'package:case_fe/feature/login_screen/login_manager.dart';
+import 'package:case_fe/feature/login_screen/login_state_holder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -20,6 +22,7 @@ class DI {
   // Managers
   late final HomeManager homeManager;
   late final AppsManager appsManager;
+  late final LoginManager loginManager;
 
   final Logger logger = Logger();
   final Dio dio = Dio();
@@ -30,6 +33,7 @@ class DI {
   // State holders
   final HomeStateHolder homeHolder = HomeStateHolder();
   final AppsStateHolder appsHolder = AppsStateHolder();
+  final LoginStateHolder loginHolder = LoginStateHolder();
 
   DI();
 
@@ -39,11 +43,20 @@ class DI {
 
     homeManager = HomeManager(holder: homeHolder);
     appsManager = AppsManager(
+        tokenRepo: tokenRepo,
         holder: appsHolder,
         logger: logger,
         netRepo: netRepo,
         key: scaffoldKey,
         settingsRepo: settingsRepo);
+    loginManager = LoginManager(
+        holder: loginHolder,
+        key: scaffoldKey,
+        logger: logger,
+        netRepo: netRepo,
+        tokenRepo: tokenRepo);
+
+    await appsManager.onGetApps();
   }
 }
 

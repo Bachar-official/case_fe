@@ -1,4 +1,5 @@
 import 'package:case_fe/app/di.dart';
+import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/const/theme.dart';
 import 'package:case_fe/feature/apps_screen/apps_state.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
@@ -34,6 +35,12 @@ class AppsScreen extends ConsumerWidget {
                 ? Icons.dark_mode
                 : Icons.light_mode),
           ),
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            onPressed: () async {
+              await Navigator.pushNamed(context, AppRouter.loginScreen);
+            },
+          )
         ],
       ),
       body: RefreshIndicator(
@@ -52,6 +59,12 @@ class AppsScreen extends ConsumerWidget {
                 emptyMessage: 'Список приложений пуст',
                 isListEmpty: state.apps.isEmpty),
       ),
+      floatingActionButton: manager.canUpdate
+          ? FloatingActionButton(
+              onPressed: null,
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

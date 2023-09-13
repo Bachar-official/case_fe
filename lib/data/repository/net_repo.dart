@@ -18,10 +18,29 @@ class NetRepo {
   }
 
   Future<List<App>?> getApps() async {
-    var response = await dio.get(urls.appsUrl);
+    var response = await dio.get(urls.appsUrl,
+        options: Options(method: 'GET', headers: {
+          'Content-Type': 'application/json',
+        }));
     if (response.statusCode == 200) {
-      var array = jsonDecode(response.data) as List<dynamic>;
+      if (response.data is List) {
+        return compute(parseApps, response.data as List<dynamic>);
+      }
+      var array = jsonDecode(response.data) as List;
       return compute(parseApps, array);
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> auth(String username, String password) async {
+    var response = await dio.post(urls.authUrl,
+        options: Options(method: 'POST', headers: {
+          'Content-Type': 'application/json',
+        }),
+        data: {"username": username, "password": password});
+    if (response.statusCode == 200) {
+      return json.decode(response.data)['token'];
     } else {
       return null;
     }

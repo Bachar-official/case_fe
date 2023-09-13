@@ -1,6 +1,8 @@
 import 'package:case_fe/const/theme.dart';
 import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/settings_repo.dart';
+import 'package:case_fe/data/repository/token_repo.dart';
+import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ class AppsManager {
   final AppsStateHolder holder;
   final Logger logger;
   final NetRepo netRepo;
+  final TokenRepo tokenRepo;
   final SettingsRepo settingsRepo;
   final GlobalKey<ScaffoldMessengerState> key;
 
@@ -18,7 +21,11 @@ class AppsManager {
       required this.logger,
       required this.netRepo,
       required this.settingsRepo,
+      required this.tokenRepo,
       required this.key});
+
+  bool get isAuthorized => tokenRepo.token != '';
+  bool get canUpdate => tokenRepo.permission?.canUpdate ?? false;
 
   void setTheme() {
     logger.d('Try to change and save theme');
