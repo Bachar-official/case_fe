@@ -2,6 +2,7 @@ import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/token_repo.dart';
 import 'package:case_fe/feature/login_screen/login_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -19,9 +20,7 @@ class LoginManager {
       required this.key,
       required this.logger,
       required this.netRepo,
-      required this.tokenRepo}) {
-    tokenRepo.clearToken();
-  }
+      required this.tokenRepo});
 
   void setUsername(String username) => holder.setUsername(username);
   void setPassword(String password) => holder.setPassword(password);
@@ -47,10 +46,14 @@ class LoginManager {
         showSnackBar(key, Colors.yellow, 'Что-то пошло не так!');
         return false;
       } else {
-        tokenRepo.setToken(response);
+        await tokenRepo.setToken(response);
         logger.i('Token got successfully');
         return true;
       }
+    } on DioException catch (e) {
+      logger.e(e.message);
+      showSnackBar(key, Colors.red, e.response?.data ?? '');
+      return false;
     } on Exception catch (e, s) {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());

@@ -17,6 +17,7 @@ class LoginScreen extends ConsumerWidget {
     final manager = di.loginManager;
 
     return Scaffold(
+      appBar: AppBar(),
       body: state.isLoading
           ? const Center(
               child: CircularProgressIndicator(),

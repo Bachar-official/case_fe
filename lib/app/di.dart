@@ -10,14 +10,15 @@ import 'package:case_fe/feature/login_screen/login_manager.dart';
 import 'package:case_fe/feature/login_screen/login_state_holder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
 
 class DI {
   // Configs and repos
   late final AppConfig config;
   late final NetRepo netRepo;
-  final TokenRepo tokenRepo = TokenRepo();
-  final SettingsRepo settingsRepo = SettingsRepo();
+  late final TokenRepo tokenRepo;
+  late final SettingsRepo settingsRepo;
 
   // Managers
   late final HomeManager homeManager;
@@ -40,6 +41,10 @@ class DI {
   Future<void> init() async {
     config = await AppConfig.fromEnv();
     netRepo = NetRepo(dio: dio, config: config);
+    Box settingsBox = await Hive.openBox('settings');
+    Box tokenBox = await Hive.openBox('token');
+    settingsRepo = SettingsRepo(settingsBox: settingsBox);
+    tokenRepo = TokenRepo(tokenBox: tokenBox);
 
     homeManager = HomeManager(holder: homeHolder);
     appsManager = AppsManager(

@@ -1,17 +1,20 @@
 import 'package:case_fe/const/theme.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 
 class SettingsRepo {
-  static const _settings = 'settings';
   static const _theme = 'theme';
-  final Box _settingsBox = Hive.box(_settings);
+  final Box settingsBox;
 
-  SettingsRepo();
+  SettingsRepo({required this.settingsBox});
 
-  ColorTheme get theme =>
-      getTheme(_settingsBox.get(_theme, defaultValue: 'light'));
+  ColorTheme get theme => _getTheme();
 
-  void setTheme(ColorTheme theme) async {
-    await _settingsBox.put(_theme, theme.name);
+  ColorTheme _getTheme() {
+    String themeName = settingsBox.get(_theme);
+    return getTheme(themeName);
+  }
+
+  Future<void> setTheme(ColorTheme theme) async {
+    await settingsBox.put(_theme, theme.name);
   }
 }

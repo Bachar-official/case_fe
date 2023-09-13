@@ -4,18 +4,20 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class TokenRepo {
   static const _token = 'token';
-  final Box _tokenBox = Hive.box(_token);
+  final Box tokenBox;
 
-  TokenRepo();
+  TokenRepo({required this.tokenBox});
 
-  String get token => _tokenBox.get(_token, defaultValue: '');
+  String get token => tokenBox.get(_token, defaultValue: '');
   Permission? get permission => getPermission(token);
+  String get shortUsername => getUsernameFirstLetter(token) ?? '?';
+  String get username => getUsername(token) ?? '?';
 
-  void setToken(String token) async {
-    await _tokenBox.put(_token, token);
+  Future<void> setToken(String token) async {
+    await tokenBox.put(_token, token);
   }
 
-  void clearToken() async {
-    await _tokenBox.put(_token, '');
+  Future<void> clearToken() async {
+    await tokenBox.put(_token, '');
   }
 }

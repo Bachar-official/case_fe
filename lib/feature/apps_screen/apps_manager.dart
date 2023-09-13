@@ -22,21 +22,31 @@ class AppsManager {
       required this.netRepo,
       required this.settingsRepo,
       required this.tokenRepo,
-      required this.key});
+      required this.key}) {
+    holder.setTheme(settingsRepo.theme);
+  }
 
   bool get isAuthorized => tokenRepo.token != '';
   bool get canUpdate => tokenRepo.permission?.canUpdate ?? false;
+  String get username => tokenRepo.username;
+  String get shortUsername => tokenRepo.shortUsername;
 
-  void setTheme() {
+  void setTheme() async {
     logger.d('Try to change and save theme');
     if (holder.appsState.theme == ColorTheme.dark) {
       holder.setTheme(ColorTheme.light);
-      settingsRepo.setTheme(ColorTheme.light);
+      await settingsRepo.setTheme(ColorTheme.light);
     } else {
       holder.setTheme(ColorTheme.dark);
-      settingsRepo.setTheme(ColorTheme.dark);
+      await settingsRepo.setTheme(ColorTheme.dark);
     }
     logger.i('Theme changed successfully');
+  }
+
+  void clearToken() async {
+    logger.d('Try to clear token');
+    await tokenRepo.clearToken();
+    logger.i('Token cleared');
   }
 
   Future<void> onGetApps() async {

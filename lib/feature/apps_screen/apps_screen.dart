@@ -35,12 +35,31 @@ class AppsScreen extends ConsumerWidget {
                 ? Icons.dark_mode
                 : Icons.light_mode),
           ),
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () async {
-              await Navigator.pushNamed(context, AppRouter.loginScreen);
-            },
-          )
+          manager.isAuthorized
+              ? GestureDetector(
+                  child: CircleAvatar(
+                    child: Text(manager.shortUsername),
+                  ),
+                  onTapDown: (details) {
+                    showMenu(
+                      context: context,
+                      position: RelativeRect.fromLTRB(details.globalPosition.dx,
+                          details.globalPosition.dy, 0, 0),
+                      items: [
+                        PopupMenuItem(
+                          onTap: manager.clearToken,
+                          child: const Text('Выйти'),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              : IconButton(
+                  icon: const Icon(Icons.account_circle),
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, AppRouter.loginScreen);
+                  },
+                )
         ],
       ),
       body: RefreshIndicator(

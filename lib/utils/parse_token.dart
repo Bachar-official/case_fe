@@ -41,3 +41,19 @@ Permission? getPermission(String token) {
   }
   return getPermissionFromString(jwt['permission']);
 }
+
+String? getUsernameFirstLetter(String token) {
+  Map<String, dynamic>? jwt = _parseJwt(token);
+  if (jwt == null) {
+    return null;
+  }
+  return jwt['username'].split('')[0];
+}
+
+String? getUsername(String token) {
+  Map<String, dynamic>? jwt = _parseJwt(token);
+  if (jwt == null) {
+    return null;
+  }
+  return jwt['username'];
+}

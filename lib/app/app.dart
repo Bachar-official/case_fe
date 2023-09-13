@@ -18,7 +18,7 @@ class App extends ConsumerWidget {
 
     return MaterialApp(
       title: 'CASE',
-      theme: themes[state.theme]!,
+      theme: themes[state.theme],
       onGenerateRoute: AppRouter.generateRoute,
       scaffoldMessengerKey: di.scaffoldKey,
     );
