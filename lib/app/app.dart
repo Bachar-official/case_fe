@@ -10,7 +10,7 @@ final provider =
     StateNotifierProvider<AppsStateHolder, AppsState>((ref) => di.appsHolder);
 
 class App extends ConsumerWidget {
-  const App({super.key});
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +18,7 @@ class App extends ConsumerWidget {
 
     return MaterialApp(
       title: 'CASE',
-      theme: themes[state.theme],
+      theme: themes[state.theme]!,
       onGenerateRoute: AppRouter.generateRoute,
       scaffoldMessengerKey: di.scaffoldKey,
     );
