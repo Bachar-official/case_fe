@@ -2,6 +2,7 @@ import 'package:case_fe/feature/home_screen/home_screen.dart';
 import 'package:case_fe/feature/login_screen/login_screen.dart';
 import 'package:case_fe/feature/new_password_screen/new_password_screen.dart';
 import 'package:case_fe/feature/profile_screen/profile_screen.dart';
+import 'package:case_fe/feature/users_screen/users_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRouter {
@@ -15,6 +16,8 @@ class AppRouter {
         return _buildRoute((context) => const NewPasswordScreen(), settings);
       case profileScreen:
         return _buildRoute((context) => const ProfileScreen(), settings);
+      case usersScreen:
+        return _buildRoute((context) => const UsersScreen(), settings);
       default:
         throw Exception('Invalid route: ${settings.name}');
     }
@@ -24,6 +27,7 @@ class AppRouter {
   static const loginScreen = '/login';
   static const newPasswordScreen = '/newPassword';
   static const profileScreen = '/profile';
+  static const usersScreen = '/users';
 }
 
 MaterialPageRoute _buildRoute(WidgetBuilder builder, RouteSettings settings) {

@@ -11,6 +11,8 @@ import 'package:case_fe/feature/login_screen/login_state_holder.dart';
 import 'package:case_fe/feature/new_password_screen/new_password_manager.dart';
 import 'package:case_fe/feature/new_password_screen/new_password_state_holder.dart';
 import 'package:case_fe/feature/profile_screen/profile_manager.dart';
+import 'package:case_fe/feature/users_screen/users_manager.dart';
+import 'package:case_fe/feature/users_screen/users_state_holder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -29,6 +31,7 @@ class DI {
   late final LoginManager loginManager;
   late final NewPasswordManager newPasswordManager;
   late final ProfileManager profileManager;
+  late final UsersManager usersManager;
 
   final Logger logger = Logger();
   final Dio dio = Dio();
@@ -42,6 +45,7 @@ class DI {
   final LoginStateHolder loginHolder = LoginStateHolder();
   final NewPasswordStateHolder newPasswordStateHolder =
       NewPasswordStateHolder();
+  final UsersStateHolder usersHolder = UsersStateHolder();
 
   DI();
 
@@ -75,6 +79,12 @@ class DI {
         tokenRepo: tokenRepo);
     profileManager =
         ProfileManager(tokenRepo: tokenRepo, appsManager: appsManager);
+    usersManager = UsersManager(
+        holder: usersHolder,
+        logger: logger,
+        netRepo: netRepo,
+        tokenRepo: tokenRepo,
+        key: scaffoldKey);
 
     await appsManager.onGetApps();
   }

@@ -19,6 +19,15 @@ class ProfileScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    manager.canManageUsers
+                        ? ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, AppRouter.usersScreen);
+                            },
+                            child: const Text('Управлять пользователями'),
+                          )
+                        : Container(),
                     ElevatedButton(
                       onPressed: () => Navigator.pushNamed(
                           context, AppRouter.newPasswordScreen),

@@ -22,6 +22,7 @@ class Urls {
       '${appPackageUrl(package)}/upload';
 
   String get authUrl => '${config.apiUrl}/auth';
+  String get usersUrl => '$authUrl/users';
   String get createUserUrl => '$authUrl/add';
   String get deleteUserUrl => '$authUrl/delete';
   String get updatePasswordUrl => '$authUrl/password';

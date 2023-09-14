@@ -31,3 +31,18 @@ extension Compare on Permission {
     return false;
   }
 }
+
+extension ToString on Permission {
+  String toSemanticString() {
+    if (name == 'full') {
+      return 'Полные права';
+    }
+    if (name == 'upload') {
+      return 'Загрузка артефактов';
+    }
+    if (name == 'update') {
+      return 'Обновление информации';
+    }
+    return 'Не определены';
+  }
+}
