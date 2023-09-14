@@ -23,6 +23,6 @@ class Urls {
 
   String get authUrl => '${config.apiUrl}/auth';
   String get createUserUrl => '$authUrl/add';
-  String get deleteUserUrl => '/$authUrl/delete';
-  String get updatePasswordUrl => '/$authUrl/password';
+  String get deleteUserUrl => '$authUrl/delete';
+  String get updatePasswordUrl => '$authUrl/password';
 }

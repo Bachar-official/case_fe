@@ -55,15 +55,20 @@ class LoginScreen extends ConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: ElevatedButton(
+                          onPressed: state.username.isNotEmpty &&
+                                  state.password.isNotEmpty
+                              ? () async {
+                                  if (await manager.auth() && context.mounted) {
+                                    manager.clearPassword();
+                                    manager.clearUsername();
+                                    await Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        AppRouter.appScreen,
+                                        (route) => false);
+                                  }
+                                }
+                              : null,
                           child: const Text('Войти'),
-                          onPressed: () async {
-                            if (await manager.auth() && context.mounted) {
-                              manager.clearPassword();
-                              manager.clearUsername();
-                              await Navigator.pushNamedAndRemoveUntil(context,
-                                  AppRouter.appScreen, (route) => false);
-                            }
-                          },
                         ),
                       )
                     ],

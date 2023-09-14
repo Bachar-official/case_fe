@@ -45,4 +45,25 @@ class NetRepo {
       return null;
     }
   }
+
+  Future<bool> updatePassword(
+      String token, String password, String oldPassword) async {
+    var response = await dio.patch(urls.updatePasswordUrl,
+        options: Options(
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+        data: {
+          'token': token,
+          'password': password,
+          'oldPassword': oldPassword
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

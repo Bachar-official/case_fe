@@ -36,23 +36,13 @@ class AppsScreen extends ConsumerWidget {
                 : Icons.light_mode),
           ),
           manager.isAuthorized
-              ? GestureDetector(
-                  child: CircleAvatar(
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRouter.profileScreen);
+                  },
+                  icon: CircleAvatar(
                     child: Text(manager.shortUsername),
                   ),
-                  onTapDown: (details) {
-                    showMenu(
-                      context: context,
-                      position: RelativeRect.fromLTRB(details.globalPosition.dx,
-                          details.globalPosition.dy, 0, 0),
-                      items: [
-                        PopupMenuItem(
-                          onTap: manager.clearToken,
-                          child: const Text('Выйти'),
-                        ),
-                      ],
-                    );
-                  },
                 )
               : IconButton(
                   icon: const Icon(Icons.account_circle),

@@ -14,7 +14,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(provider);
-    final manager = di.homeManager;
+    // final manager = di.homeManager;
 
     return Scaffold(
       body: [const AppsScreen()][state.pageNumber],

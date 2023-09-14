@@ -3,6 +3,7 @@ import 'package:case_fe/data/repository/token_repo.dart';
 import 'package:case_fe/feature/login_screen/login_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -24,6 +25,7 @@ class LoginManager {
 
   void setUsername(String username) => holder.setUsername(username);
   void setPassword(String password) => holder.setPassword(password);
+  void setLoading(bool isLoading) => holder.setLoading(isLoading);
 
   void clearUsername() {
     holder.clearUserName();
@@ -37,7 +39,7 @@ class LoginManager {
 
   Future<bool> auth() async {
     logger.d('Try to auth');
-    holder.setLoading(true);
+    setLoading(true);
     try {
       var response = await netRepo.auth(
           holder.loginState.username, holder.loginState.password);
@@ -53,13 +55,13 @@ class LoginManager {
     } on DioException catch (e) {
       logger.e(e.message);
       showSnackBar(key, Colors.red, e.response?.data ?? '');
+      setLoading(false);
       return false;
     } on Exception catch (e, s) {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());
+      setLoading(false);
       return false;
-    } finally {
-      holder.setLoading(false);
     }
   }
 }

@@ -43,15 +43,19 @@ class AppsManager {
     logger.i('Theme changed successfully');
   }
 
+  void setLoading(bool isLoading) => holder.setLoading(isLoading);
+
   void clearToken() async {
     logger.d('Try to clear token');
+    setLoading(true);
     await tokenRepo.clearToken();
+    setLoading(false);
     logger.i('Token cleared');
   }
 
   Future<void> onGetApps() async {
     logger.d('Request all apps');
-    holder.setLoading(true);
+    setLoading(true);
     try {
       var response = await netRepo.getApps();
       if (response == null) {
@@ -65,7 +69,7 @@ class AppsManager {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());
     } finally {
-      holder.setLoading(false);
+      setLoading(false);
     }
   }
 }
