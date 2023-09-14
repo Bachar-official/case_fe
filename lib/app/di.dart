@@ -10,6 +10,8 @@ import 'package:case_fe/feature/login_screen/login_manager.dart';
 import 'package:case_fe/feature/login_screen/login_state_holder.dart';
 import 'package:case_fe/feature/new_password_screen/new_password_manager.dart';
 import 'package:case_fe/feature/new_password_screen/new_password_state_holder.dart';
+import 'package:case_fe/feature/new_user_screen/new_user_manager.dart';
+import 'package:case_fe/feature/new_user_screen/new_user_state_holder.dart';
 import 'package:case_fe/feature/profile_screen/profile_manager.dart';
 import 'package:case_fe/feature/users_screen/users_manager.dart';
 import 'package:case_fe/feature/users_screen/users_state_holder.dart';
@@ -32,6 +34,7 @@ class DI {
   late final NewPasswordManager newPasswordManager;
   late final ProfileManager profileManager;
   late final UsersManager usersManager;
+  late final NewUserManager newUserManager;
 
   final Logger logger = Logger();
   final Dio dio = Dio();
@@ -46,6 +49,7 @@ class DI {
   final NewPasswordStateHolder newPasswordStateHolder =
       NewPasswordStateHolder();
   final UsersStateHolder usersHolder = UsersStateHolder();
+  final NewUserStateHolder newUserHolder = NewUserStateHolder();
 
   DI();
 
@@ -85,6 +89,12 @@ class DI {
         netRepo: netRepo,
         tokenRepo: tokenRepo,
         key: scaffoldKey);
+    newUserManager = NewUserManager(
+        holder: newUserHolder,
+        key: scaffoldKey,
+        logger: logger,
+        netRepo: netRepo,
+        tokenRepo: tokenRepo);
 
     await appsManager.onGetApps();
   }

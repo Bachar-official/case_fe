@@ -48,6 +48,8 @@ class LoginManager {
         return false;
       } else {
         await tokenRepo.setToken(response);
+        clearUsername();
+        clearPassword();
         logger.i('Token got successfully');
         return true;
       }

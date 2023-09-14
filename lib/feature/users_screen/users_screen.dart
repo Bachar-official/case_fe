@@ -1,4 +1,5 @@
 import 'package:case_fe/app/di.dart';
+import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/feature/components/empty_list_handler.dart';
 import 'package:case_fe/feature/users_screen/components/user_card.dart';
 import 'package:case_fe/feature/users_screen/users_state.dart';
@@ -50,6 +51,10 @@ class UsersScreen extends ConsumerWidget {
           : const Center(
               child: Text('Вы не авторизованы'),
             ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => Navigator.pushNamed(context, AppRouter.newUserScreen),
+      ),
     );
   }
 }
