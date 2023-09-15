@@ -35,6 +35,25 @@ class NetRepo {
     }
   }
 
+  Future<bool> createApp(String package, String name, String version,
+      String? icon, String description, String token) async {
+    var response = await dio.post(urls.appInfoUrl(package),
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+        }),
+        data: {
+          'token': token,
+          'name': name,
+          'version': version,
+          'description': description.isEmpty ? null : description,
+          'icon': icon
+        });
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
   Future<List<User>?> getUsers(String token) async {
     var response = await dio.post(urls.usersUrl,
         options: Options(method: 'POST', headers: {

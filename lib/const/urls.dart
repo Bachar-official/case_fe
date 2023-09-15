@@ -8,12 +8,14 @@ class Urls {
 
   String get appsUrl => '${config.apiUrl}/apps';
 
+  String iconUrl(String iconPath) => '${config.apiUrl}/$iconPath';
+
   String appPackageUrl(String package) => '${config.apiUrl}/$package';
 
-  String appInfoUrl(String package) => '${appPackageUrl(package)}/info';
+  String appInfoUrl(String package) => '$appsUrl/$package/info';
 
   String downloadApkUrl({required String package, Arch? arch}) =>
-      '${appPackageUrl(package)}/${getStringFromArch(arch)}/download';
+      '$appsUrl/${appPackageUrl(package)}/${getStringFromArch(arch)}/download';
 
   String downloadIconUrl({required String package}) =>
       '${appPackageUrl(package)}/icon';

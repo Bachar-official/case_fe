@@ -70,7 +70,8 @@ class AppsScreen extends ConsumerWidget {
       ),
       floatingActionButton: manager.canUpdate
           ? FloatingActionButton(
-              onPressed: null,
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppRouter.newAppScreen),
               child: const Icon(Icons.add),
             )
           : null,

@@ -7,6 +7,10 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(child: Text(app.name));
+    return Card(
+      child: Row(
+        children: [],
+      ),
+    );
   }
 }
