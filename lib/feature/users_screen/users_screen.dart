@@ -44,6 +44,7 @@ class UsersScreen extends ConsumerWidget {
                           user: state.users.elementAt(index),
                           isYou: state.users.elementAt(index).name ==
                               manager.username,
+                          onDeleteUser: manager.deleteUser,
                         ),
                       ),
                     ),

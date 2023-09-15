@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 class UserCard extends StatelessWidget {
   final User user;
   final bool isYou;
-  const UserCard({required this.user, super.key, required this.isYou});
+  final Future<void> Function(User) onDeleteUser;
+  const UserCard(
+      {required this.user,
+      super.key,
+      required this.isYou,
+      required this.onDeleteUser});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,7 @@ class UserCard extends StatelessWidget {
           ),
           IconButton(
             tooltip: 'Удалить',
-            onPressed: isYou ? null : () {},
+            onPressed: isYou ? null : () => onDeleteUser(user),
             icon: const Icon(Icons.delete),
           ),
         ],

@@ -50,4 +50,27 @@ class UsersManager {
       setLoading(false);
     }
   }
+
+  Future<void> deleteUser(User user) async {
+    logger.d('Trying to delete user');
+    setLoading(true);
+    try {
+      var result = await netRepo.deleteUser(tokenRepo.token, user.name);
+      if (result) {
+        setLoading(false);
+        await getUsers();
+      } else {
+        logger.w('Problems with deleting user');
+        showSnackBar(key, Colors.yellow, 'Что-то пошло не так');
+      }
+    } on DioException catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red, e.response?.data);
+      setLoading(false);
+    } on Exception catch (e, s) {
+      logger.e(e.toString(), stackTrace: s);
+      showSnackBar(key, Colors.red, e.toString());
+      setLoading(false);
+    }
+  }
 }

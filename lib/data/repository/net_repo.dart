@@ -107,4 +107,16 @@ class NetRepo {
     }
     return false;
   }
+
+  Future<bool> deleteUser(String token, String username) async {
+    var response = await dio.delete(urls.deleteUserUrl,
+        options: Options(method: 'DELETE', headers: {
+          'Content-Type': 'application/json',
+        }),
+        data: {'token': token, 'username': username});
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
 }
