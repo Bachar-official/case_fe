@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:case_fe/app/app_config.dart';
 import 'package:case_fe/const/urls.dart';
+import 'package:case_fe/domain/entity/apk.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/domain/entity/user.dart';
 import 'package:case_fe/utils/parse_entities.dart';
@@ -35,6 +36,20 @@ class NetRepo {
       }
       var array = jsonDecode(response.data) as List;
       return compute(parseApps, array);
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<APK>?> getAppApk(String package) async {
+    var response = await dio.get(urls.apkListUrl(package),
+        options: Options(method: getMethod));
+    if (response.statusCode == 200) {
+      if (response.data is List) {
+        return compute(parseApks, response.data as List<dynamic>);
+      }
+      var array = jsonDecode(response.data) as List;
+      return compute(parseApks, array);
     } else {
       return null;
     }

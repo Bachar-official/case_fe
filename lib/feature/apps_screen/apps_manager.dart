@@ -80,8 +80,8 @@ class AppsManager {
 
   void onDeleteApp(App app) async {
     logger.d('Try to delete app ${app.name}');
+    setLoading(true);
     try {
-      setLoading(true);
       bool result = await netRepo.deleteApp(app.package, tokenRepo.token);
       if (result) {
         logger.i('App ${app.name} deleted');
