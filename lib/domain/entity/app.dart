@@ -18,4 +18,8 @@ class App {
         iconPath = json['iconPath'],
         version = json['version'],
         description = json['description'];
+
+  @override
+  String toString() =>
+      'App with name $name, package $package, version $version, iconPath $iconPath';
 }

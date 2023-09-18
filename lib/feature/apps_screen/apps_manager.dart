@@ -5,8 +5,11 @@ import 'package:case_fe/data/repository/token_repo.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+
+import '../../domain/entity/app.dart';
 
 class AppsManager {
   final AppsStateHolder holder;
@@ -15,6 +18,8 @@ class AppsManager {
   final TokenRepo tokenRepo;
   final SettingsRepo settingsRepo;
   final GlobalKey<ScaffoldMessengerState> key;
+
+  String get baseUrl => netRepo.config.apiUrl;
 
   AppsManager(
       {required this.holder,
@@ -65,6 +70,30 @@ class AppsManager {
         holder.setApps(response);
         logger.i('Got ${response.length} apps');
       }
+    } on Exception catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red, e.toString());
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  void onDeleteApp(App app) async {
+    logger.d('Try to delete app ${app.name}');
+    try {
+      setLoading(true);
+      bool result = await netRepo.deleteApp(app.package, tokenRepo.token);
+      if (result) {
+        logger.i('App ${app.name} deleted');
+        await onGetApps();
+      } else {
+        logger.w('Something wrong with deleting app ${app.name}');
+        setLoading(false);
+        showSnackBar(key, Colors.yellow, 'Что-то пошло не так');
+      }
+    } on DioException catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red, e.response?.data);
     } on Exception catch (e, s) {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());

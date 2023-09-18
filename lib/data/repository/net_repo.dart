@@ -10,6 +10,13 @@ import 'package:flutter/foundation.dart';
 
 import '../../domain/entity/app.dart';
 
+const contentTypeHeader = {'Content-Type': 'application/json'};
+
+const getMethod = 'GET';
+const postMethod = 'POST';
+const patchMethod = 'PATCH';
+const deleteMethod = 'DELETE';
+
 class NetRepo {
   final Dio dio;
   final AppConfig config;
@@ -21,9 +28,7 @@ class NetRepo {
 
   Future<List<App>?> getApps() async {
     var response = await dio.get(urls.appsUrl,
-        options: Options(method: 'GET', headers: {
-          'Content-Type': 'application/json',
-        }));
+        options: Options(method: getMethod, headers: contentTypeHeader));
     if (response.statusCode == 200) {
       if (response.data is List) {
         return compute(parseApps, response.data as List<dynamic>);
@@ -38,9 +43,7 @@ class NetRepo {
   Future<bool> createApp(String package, String name, String version,
       String? icon, String description, String token) async {
     var response = await dio.post(urls.appInfoUrl(package),
-        options: Options(headers: {
-          'Content-Type': 'application/json',
-        }),
+        options: Options(method: postMethod, headers: contentTypeHeader),
         data: {
           'token': token,
           'name': name,
@@ -54,11 +57,19 @@ class NetRepo {
     return false;
   }
 
+  Future<bool> deleteApp(String package, String token) async {
+    var response = await dio.delete(urls.appPackageUrl(package),
+        options: Options(method: deleteMethod, headers: contentTypeHeader),
+        data: {"token": token});
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
   Future<List<User>?> getUsers(String token) async {
     var response = await dio.post(urls.usersUrl,
-        options: Options(method: 'POST', headers: {
-          'Content-Type': 'application/json',
-        }),
+        options: Options(method: postMethod, headers: contentTypeHeader),
         data: {"token": token});
     if (response.statusCode == 200) {
       if (response.data is List) {
@@ -73,9 +84,7 @@ class NetRepo {
 
   Future<String?> auth(String username, String password) async {
     var response = await dio.post(urls.authUrl,
-        options: Options(method: 'POST', headers: {
-          'Content-Type': 'application/json',
-        }),
+        options: Options(method: postMethod, headers: contentTypeHeader),
         data: {"username": username, "password": password});
     if (response.statusCode == 200) {
       return json.decode(response.data)['token'];
@@ -88,10 +97,8 @@ class NetRepo {
       String token, String password, String oldPassword) async {
     var response = await dio.patch(urls.updatePasswordUrl,
         options: Options(
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          method: patchMethod,
+          headers: contentTypeHeader,
         ),
         data: {
           'token': token,
@@ -109,10 +116,8 @@ class NetRepo {
     var response = await dio.post(
       urls.createUserUrl,
       options: Options(
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: postMethod,
+        headers: contentTypeHeader,
       ),
       data: {
         'token': token,
@@ -129,9 +134,7 @@ class NetRepo {
 
   Future<bool> deleteUser(String token, String username) async {
     var response = await dio.delete(urls.deleteUserUrl,
-        options: Options(method: 'DELETE', headers: {
-          'Content-Type': 'application/json',
-        }),
+        options: Options(method: deleteMethod, headers: contentTypeHeader),
         data: {'token': token, 'username': username});
     if (response.statusCode == 200) {
       return true;

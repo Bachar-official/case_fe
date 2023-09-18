@@ -56,11 +56,15 @@ class LoginManager {
     } on DioException catch (e) {
       logger.e(e.message);
       showSnackBar(key, Colors.red, e.response?.data ?? '');
+      clearUsername();
+      clearPassword();
       setLoading(false);
       return false;
     } on Exception catch (e, s) {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());
+      clearUsername();
+      clearPassword();
       setLoading(false);
       return false;
     }

@@ -10,7 +10,7 @@ class Urls {
 
   String iconUrl(String iconPath) => '${config.apiUrl}/$iconPath';
 
-  String appPackageUrl(String package) => '${config.apiUrl}/$package';
+  String appPackageUrl(String package) => '$appsUrl/$package';
 
   String appInfoUrl(String package) => '$appsUrl/$package/info';
 

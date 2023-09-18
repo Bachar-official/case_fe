@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:case_fe/app/di.dart';
+import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state_holder.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,8 @@ class NewAppScreen extends ConsumerWidget {
                               if (manager.formKey.currentState!.validate()) {
                                 bool isCreated = await manager.createApp();
                                 if (isCreated && context.mounted) {
-                                  Navigator.pop(context);
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      AppRouter.appScreen, (route) => false);
                                 }
                               }
                             },
