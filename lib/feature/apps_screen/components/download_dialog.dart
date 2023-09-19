@@ -1,9 +1,9 @@
 import 'package:case_fe/domain/entity/app.dart';
 import 'package:case_fe/domain/entity/arch.dart';
-import 'package:case_fe/utils/web_download_file.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 
 class DownloadDialog extends StatefulWidget {
   final App app;
@@ -52,12 +52,16 @@ class _DownloadDialogState extends State<DownloadDialog> {
           onPressed: _arch == null
               ? null
               : () async {
-                  if (kIsWeb) {
-                    downloadFileForWeb(
-                        '${widget.baseUrl}/apps/${widget.app.package}/${_arch!.name}/download');
-                  } else {
-                    debugPrint('Do it in Android');
-                  }
+                  // if (kIsWeb) {
+                  // downloadFileForWeb(
+                  //     '${widget.baseUrl}/apps/${widget.app.package}/${_arch!.name}/download');
+                  await launchUrl(
+                    Uri.parse(
+                        '${widget.baseUrl}/apps/${widget.app.package}/${_arch!.name}/download'),
+                  );
+                  // } else {
+                  //   debugPrint('Do it in Android');
+                  // }
                 },
           child: const Text('Скачать'),
         ),

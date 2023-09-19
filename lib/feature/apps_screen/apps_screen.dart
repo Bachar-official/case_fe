@@ -64,7 +64,7 @@ class AppsScreen extends ConsumerWidget {
                 listWidget: GridView.builder(
                   padding: const EdgeInsets.all(10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: screenSize.width ~/ 200),
+                      crossAxisCount: kIsWeb ? screenSize.width ~/ 200 : 2),
                   itemCount: state.apps.length,
                   itemBuilder: (context, index) => SquareAppCard(
                     app: state.apps.elementAt(index),
