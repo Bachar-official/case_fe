@@ -14,6 +14,7 @@ class Urls {
 
   String appInfoUrl(String package) => '$appsUrl/$package/info';
   String apkListUrl(String package) => '$appsUrl/$package/apk';
+  String apkUploadUrl(String package) => '$appsUrl/$package/upload';
 
   String downloadApkUrl({required String package, Arch? arch}) =>
       '$appsUrl/${appPackageUrl(package)}/${getStringFromArch(arch)}/download';

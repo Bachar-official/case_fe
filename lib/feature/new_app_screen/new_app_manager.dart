@@ -41,41 +41,6 @@ class NewAppManager {
   void setVersion(String version) => holder.setVersion(version);
   void setDescription(String description) => holder.setDescription(description);
 
-  String? validateEmpty(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Поле обязательно для заполнения';
-    }
-    return null;
-  }
-
-  String? validateVersion(String? input) {
-    if (input == null || input.isEmpty) {
-      return "Поле обязательно для заполнения";
-    }
-
-    final regExp = RegExp(r'^\d+\.\d+\.\d+$');
-
-    if (!regExp.hasMatch(input)) {
-      return "Неправильный формат строки";
-    }
-
-    return null;
-  }
-
-  String? validatePackage(String? input) {
-    if (input == null || input.isEmpty) {
-      return "Поле обязательно для заполнения";
-    }
-
-    final regExp = RegExp(r'^[a-z]+\.[a-z]+\.[a-z]+$');
-
-    if (!regExp.hasMatch(input)) {
-      return "Неправильный формат строки";
-    }
-
-    return null;
-  }
-
   void setIcon(XFile? file) async {
     logger.d('Setting icon');
     if (file == null) {

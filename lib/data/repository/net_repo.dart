@@ -41,20 +41,6 @@ class NetRepo {
     }
   }
 
-  Future<List<APK>?> getAppApk(String package) async {
-    var response = await dio.get(urls.apkListUrl(package),
-        options: Options(method: getMethod));
-    if (response.statusCode == 200) {
-      if (response.data is List) {
-        return compute(parseApks, response.data as List<dynamic>);
-      }
-      var array = jsonDecode(response.data) as List;
-      return compute(parseApks, array);
-    } else {
-      return null;
-    }
-  }
-
   Future<bool> createApp(String package, String name, String version,
       String? icon, String description, String token) async {
     var response = await dio.post(urls.appInfoUrl(package),
@@ -76,6 +62,16 @@ class NetRepo {
     var response = await dio.delete(urls.appPackageUrl(package),
         options: Options(method: deleteMethod, headers: contentTypeHeader),
         data: {"token": token});
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> uploadApp(String package, String token, String body) async {
+    var response = await dio.post(urls.uploadApkUrl(package: package),
+        options: Options(method: postMethod, headers: contentTypeHeader),
+        data: {'token': token, 'body': body});
     if (response.statusCode == 200) {
       return true;
     }

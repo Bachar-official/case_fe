@@ -33,6 +33,7 @@ class AppsManager {
 
   bool get isAuthorized => tokenRepo.token != '';
   bool get canUpdate => tokenRepo.permission?.canUpdate ?? false;
+  bool get canUpload => tokenRepo.permission?.canUpload ?? false;
   String get username => tokenRepo.username;
   String get shortUsername => tokenRepo.shortUsername;
 

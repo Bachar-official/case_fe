@@ -3,7 +3,6 @@ import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/const/theme.dart';
 import 'package:case_fe/feature/apps_screen/apps_state.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
-import 'package:case_fe/feature/apps_screen/components/app_card.dart';
 import 'package:case_fe/feature/apps_screen/components/square_app_card.dart';
 import 'package:case_fe/feature/components/empty_list_handler.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +19,8 @@ class AppsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(provider);
     final manager = di.appsManager;
+    var screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Приложения'),
@@ -59,35 +60,25 @@ class AppsScreen extends ConsumerWidget {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : LayoutBuilder(builder: (context, constraints) {
-                return EmptyListHandler(
-                    listWidget: constraints.maxWidth / constraints.maxHeight < 1
-                        ? ListView.builder(
-                            itemCount: state.apps.length,
-                            itemBuilder: (context, index) => AppCard(
-                              app: state.apps.elementAt(index),
-                              baseUrl: manager.baseUrl,
-                              onDeleteApp: manager.isAuthorized
-                                  ? manager.onDeleteApp
-                                  : null,
-                            ),
-                          )
-                        : GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4),
-                            itemCount: state.apps.length,
-                            itemBuilder: (context, index) => SquareAppCard(
-                              app: state.apps.elementAt(index),
-                              baseUrl: manager.baseUrl,
-                              onDeleteApp: manager.isAuthorized
-                                  ? manager.onDeleteApp
-                                  : null,
-                            ),
-                          ),
-                    emptyMessage: 'Список приложений пуст',
-                    isListEmpty: state.apps.isEmpty);
-              }),
+            : EmptyListHandler(
+                listWidget: GridView.builder(
+                  padding: const EdgeInsets.all(10),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: screenSize.width ~/ 200),
+                  itemCount: state.apps.length,
+                  itemBuilder: (context, index) => SquareAppCard(
+                    app: state.apps.elementAt(index),
+                    baseUrl: manager.baseUrl,
+                    onDeleteApp:
+                        manager.isAuthorized ? manager.onDeleteApp : null,
+                    onUploadApk: manager.canUpload
+                        ? () =>
+                            Navigator.pushNamed(context, AppRouter.newApkScreen)
+                        : null,
+                  ),
+                ),
+                emptyMessage: 'Список приложений пуст',
+                isListEmpty: state.apps.isEmpty),
       ),
       floatingActionButton: manager.canUpdate
           ? FloatingActionButton(

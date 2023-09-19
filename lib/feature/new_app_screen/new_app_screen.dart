@@ -4,6 +4,7 @@ import 'package:case_fe/app/di.dart';
 import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state_holder.dart';
+import 'package:case_fe/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,7 +40,7 @@ class NewAppScreen extends ConsumerWidget {
                         children: [
                           TextFormField(
                             controller: manager.nameC,
-                            validator: manager.validateEmpty,
+                            validator: Validator.validateEmpty,
                             onChanged: manager.setName,
                             decoration: InputDecoration(
                               labelText: 'Название приложения',
@@ -51,7 +52,7 @@ class NewAppScreen extends ConsumerWidget {
                           ),
                           TextFormField(
                             controller: manager.packageC,
-                            validator: manager.validatePackage,
+                            validator: Validator.validatePackage,
                             onChanged: manager.setPackage,
                             decoration: InputDecoration(
                               labelText: 'Package',
@@ -63,7 +64,7 @@ class NewAppScreen extends ConsumerWidget {
                           ),
                           TextFormField(
                             controller: manager.versionC,
-                            validator: manager.validateVersion,
+                            validator: Validator.validateVersion,
                             onChanged: manager.setVersion,
                             decoration: InputDecoration(
                               labelText: 'Версия',
