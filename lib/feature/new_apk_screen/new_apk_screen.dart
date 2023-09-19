@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:case_fe/app/di.dart';
 import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_state.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_state_holder.dart';
 import 'package:case_fe/utils/validator.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
