@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:case_fe/app/di.dart';
+import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_state.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_state_holder.dart';
 import 'package:case_fe/utils/validator.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -79,21 +81,28 @@ class NewApkScreen extends ConsumerWidget {
                                 : 'Размер файла ${manager.fileSize} кб'),
                             ElevatedButton(
                               onPressed: state.apk == null
-                                  ? () async {
-                                      FilePickerResult? pickerResult =
-                                          await FilePicker.platform.pickFiles(
-                                        type: FileType.custom,
-                                        allowedExtensions: ['apk'],
-                                      );
-                                      if (pickerResult != null) {
-                                        manager.setApk(File(
-                                            pickerResult.files.single.path!));
-                                      }
-                                    }
+                                  ? () => manager.setFile()
                                   : () => manager.setApk(null),
                               child: Text(state.apk == null
                                   ? 'Прикрепить файл'
                                   : 'Очистить файл'),
+                            ),
+                            ElevatedButton(
+                              onPressed: state.apk == null
+                                  ? null
+                                  : () async {
+                                      if (manager.formKey.currentState!
+                                          .validate()) {
+                                        bool result = await manager.uploadApk();
+                                        if (result && context.mounted) {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              AppRouter.appScreen,
+                                              (route) => false);
+                                        }
+                                      }
+                                    },
+                              child: const Text('Загрузить'),
                             ),
                           ],
                         ),

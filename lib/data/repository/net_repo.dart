@@ -68,10 +68,11 @@ class NetRepo {
     return false;
   }
 
-  Future<bool> uploadApp(String package, String token, String body) async {
+  Future<bool> uploadApp(
+      String package, String token, String body, String arch) async {
     var response = await dio.post(urls.uploadApkUrl(package: package),
         options: Options(method: postMethod, headers: contentTypeHeader),
-        data: {'token': token, 'body': body});
+        data: {'token': token, 'body': body, 'arch': arch});
     if (response.statusCode == 200) {
       return true;
     }

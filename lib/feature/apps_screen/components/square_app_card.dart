@@ -1,4 +1,4 @@
-import 'package:case_fe/app/routing.dart';
+import 'package:case_fe/feature/apps_screen/components/download_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/entity/app.dart';
@@ -24,7 +24,13 @@ class SquareAppCard extends StatelessWidget {
         alignment: Alignment.topRight,
         children: [
           IconButton(
-            onPressed: app.apk.isEmpty ? null : () {},
+            onPressed: app.apk.isEmpty
+                ? null
+                : () => showDialog(
+                      context: context,
+                      builder: (context) =>
+                          DownloadDialog(app: app, baseUrl: baseUrl),
+                    ),
             icon: const Icon(Icons.download),
           ),
           Column(
@@ -58,23 +64,25 @@ class SquareAppCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  onDeleteApp == null
-                      ? emptyPlace
-                      : IconButton(
-                          onPressed: () => onDeleteApp!(app),
-                          icon: const Icon(Icons.delete),
-                        ),
-                  onUploadApk == null
-                      ? emptyPlace
-                      : IconButton(
-                          icon: const Icon(Icons.upload),
-                          onPressed: onUploadApk,
-                        ),
-                ],
-              ),
+              onDeleteApp != null || onUploadApk != null
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        onDeleteApp == null
+                            ? emptyPlace
+                            : IconButton(
+                                onPressed: () => onDeleteApp!(app),
+                                icon: const Icon(Icons.delete),
+                              ),
+                        onUploadApk == null
+                            ? emptyPlace
+                            : IconButton(
+                                icon: const Icon(Icons.upload),
+                                onPressed: onUploadApk,
+                              ),
+                      ],
+                    )
+                  : Container(),
             ],
           )
         ],

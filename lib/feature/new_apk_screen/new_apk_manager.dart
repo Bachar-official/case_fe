@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/token_repo.dart';
@@ -10,6 +11,8 @@ import 'package:case_fe/feature/apps_screen/apps_manager.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -60,11 +63,31 @@ class NewApkManager {
     packageC.value = TextEditingValue.empty;
   }
 
-  void setApk(File? file) {
-    if (file == null) {
+  void setFile() async {
+    logger.d('Try to pick a file');
+    setLoading(true);
+    try {
+      FilePickerResult? pickerResult = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['apk'],
+      );
+      if (pickerResult != null) {
+        await compute(setApk, pickerResult.files.single.bytes);
+      }
+      setLoading(false);
+    } catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red,
+          'Ошибка при попытке прикрепить файл: ${e.toString()}');
+      setLoading(false);
+    }
+  }
+
+  Future<void> setApk(Uint8List? bytes) async {
+    if (bytes == null) {
       holder.setApk(null);
     } else {
-      String b64file = base64Encode(file.readAsBytesSync());
+      String b64file = base64Encode(bytes);
       holder.setApk(b64file);
     }
   }
@@ -74,7 +97,10 @@ class NewApkManager {
     setLoading(true);
     try {
       bool response = await netRepo.uploadApp(
-          holder.apkState.package, tokenRepo.token, holder.apkState.apk ?? '');
+          holder.apkState.package,
+          tokenRepo.token,
+          holder.apkState.apk ?? '',
+          holder.apkState.arch.name);
       if (response) {
         logger.i('APK uploaded');
         clearPackage();
