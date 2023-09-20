@@ -89,8 +89,10 @@ class DI {
         logger: logger,
         netRepo: netRepo,
         tokenRepo: tokenRepo);
-    profileManager =
-        ProfileManager(tokenRepo: tokenRepo, appsManager: appsManager);
+    profileManager = ProfileManager(
+        tokenRepo: tokenRepo,
+        appsManager: appsManager,
+        usersManager: usersManager);
     usersManager = UsersManager(
         holder: usersHolder,
         logger: logger,

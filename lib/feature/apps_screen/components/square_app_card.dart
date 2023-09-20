@@ -56,7 +56,7 @@ class SquareAppCard extends StatelessWidget {
                 child: Text(
                   app.name,
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               Text(
@@ -68,17 +68,17 @@ class SquareAppCard extends StatelessWidget {
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        onDeleteApp == null
-                            ? emptyPlace
-                            : IconButton(
-                                onPressed: () => onDeleteApp!(app),
-                                icon: const Icon(Icons.delete),
-                              ),
                         onUploadApk == null
                             ? emptyPlace
                             : IconButton(
                                 icon: const Icon(Icons.upload),
                                 onPressed: onUploadApk,
+                              ),
+                        onDeleteApp == null
+                            ? emptyPlace
+                            : IconButton(
+                                onPressed: () => onDeleteApp!(app),
+                                icon: const Icon(Icons.delete),
                               ),
                       ],
                     )

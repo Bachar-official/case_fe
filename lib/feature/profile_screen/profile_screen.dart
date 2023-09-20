@@ -22,6 +22,7 @@ class ProfileScreen extends StatelessWidget {
                     manager.canManageUsers
                         ? ElevatedButton(
                             onPressed: () {
+                              manager.getUsers();
                               Navigator.pushNamed(
                                   context, AppRouter.usersScreen);
                             },

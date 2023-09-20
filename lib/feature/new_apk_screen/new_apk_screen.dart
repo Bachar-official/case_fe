@@ -15,6 +15,8 @@ class NewApkScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final String? package =
+        ModalRoute.of(context)?.settings.arguments as String?;
     final state = ref.watch(provider);
     final manager = di.newApkManager;
 
@@ -33,13 +35,9 @@ class NewApkScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             TextFormField(
-                              controller: manager.packageC,
-                              decoration: InputDecoration(
+                              initialValue: package ?? '',
+                              decoration: const InputDecoration(
                                 labelText: 'Package',
-                                suffix: IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: manager.clearPackage,
-                                ),
                               ),
                               onChanged: manager.setPackage,
                               validator: Validator.validatePackage,

@@ -64,6 +64,7 @@ class AppsScreen extends ConsumerWidget {
                 listWidget: GridView.builder(
                   padding: const EdgeInsets.all(10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 0.95,
                       crossAxisCount: kIsWeb ? screenSize.width ~/ 200 : 2),
                   itemCount: state.apps.length,
                   itemBuilder: (context, index) => SquareAppCard(
@@ -72,8 +73,9 @@ class AppsScreen extends ConsumerWidget {
                     onDeleteApp:
                         manager.isAuthorized ? manager.onDeleteApp : null,
                     onUploadApk: manager.canUpload
-                        ? () =>
-                            Navigator.pushNamed(context, AppRouter.newApkScreen)
+                        ? () => Navigator.pushNamed(
+                            context, AppRouter.newApkScreen,
+                            arguments: state.apps[index].package)
                         : null,
                   ),
                 ),

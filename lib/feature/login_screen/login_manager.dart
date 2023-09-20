@@ -50,6 +50,7 @@ class LoginManager {
         await tokenRepo.setToken(response);
         clearUsername();
         clearPassword();
+        setLoading(false);
         logger.i('Token got successfully');
         return true;
       }

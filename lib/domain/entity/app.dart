@@ -1,4 +1,5 @@
 import 'package:case_fe/domain/entity/apk.dart';
+import 'package:case_fe/utils/compare_versions.dart';
 
 class App {
   final String name;
@@ -37,4 +38,32 @@ class App {
   @override
   String toString() =>
       'App with name $name, package $package, version $version, iconPath $iconPath, apkLength: ${apk.length}';
+
+  @override
+  int get hashCode => version.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! App) {
+      return false;
+    }
+    return compareVersions(version1: version, version2: other.version) == 0;
+  }
+
+  bool operator <(Object other) {
+    if (other is! App) {
+      return false;
+    }
+    return compareVersions(version1: version, version2: other.version) == -1;
+  }
+
+  bool operator >(Object other) {
+    if (other is! App) {
+      return false;
+    }
+    return compareVersions(version1: version, version2: other.version) == 1;
+  }
+
+  bool operator <=(Object other) => this == other || this < other;
+  bool operator >=(Object other) => this == other || this > other;
 }
