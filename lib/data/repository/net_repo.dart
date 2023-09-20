@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:case_fe/app/app_config.dart';
 import 'package:case_fe/const/urls.dart';
-import 'package:case_fe/domain/entity/apk.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/domain/entity/user.dart';
 import 'package:case_fe/utils/parse_entities.dart';

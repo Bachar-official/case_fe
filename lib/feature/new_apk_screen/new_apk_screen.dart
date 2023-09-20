@@ -35,7 +35,7 @@ class NewApkScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             TextFormField(
-                              initialValue: package ?? '',
+                              initialValue: package,
                               decoration: const InputDecoration(
                                 labelText: 'Package',
                               ),
@@ -87,7 +87,8 @@ class NewApkScreen extends ConsumerWidget {
                                   : () async {
                                       if (manager.formKey.currentState!
                                           .validate()) {
-                                        bool result = await manager.uploadApk();
+                                        bool result =
+                                            await manager.uploadApk(package);
                                         if (result && context.mounted) {
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,

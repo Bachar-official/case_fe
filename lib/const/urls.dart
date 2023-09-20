@@ -1,4 +1,5 @@
 import 'package:case_fe/app/app_config.dart';
+import 'package:case_fe/domain/entity/app.dart';
 import 'package:case_fe/domain/entity/arch.dart';
 
 class Urls {
@@ -16,8 +17,8 @@ class Urls {
   String apkListUrl(String package) => '$appsUrl/$package/apk';
   String apkUploadUrl(String package) => '$appsUrl/$package/upload';
 
-  String downloadApkUrl({required String package, Arch? arch}) =>
-      '$appsUrl/${appPackageUrl(package)}/${getStringFromArch(arch)}/download';
+  String downloadApkUrl({required App app, Arch? arch}) =>
+      '${appPackageUrl(app.package)}/${getStringFromArch(arch)}/download';
 
   String downloadIconUrl({required String package}) =>
       '${appPackageUrl(package)}/icon';

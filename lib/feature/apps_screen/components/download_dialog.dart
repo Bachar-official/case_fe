@@ -2,7 +2,6 @@ import 'package:case_fe/domain/entity/app.dart';
 import 'package:case_fe/domain/entity/arch.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_launcher/url_launcher.dart';
 
 class DownloadDialog extends StatefulWidget {

@@ -1,7 +1,9 @@
+import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/feature/apps_screen/components/download_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/entity/app.dart';
+import 'dart:io' show Platform;
 
 const emptyPlace = SizedBox.shrink();
 
@@ -10,8 +12,10 @@ class SquareAppCard extends StatelessWidget {
   final String baseUrl;
   final void Function(App)? onDeleteApp;
   final void Function()? onUploadApk;
+  final Future<void> Function(App, Arch) onInstallApk;
   const SquareAppCard(
       {required this.app,
+      required this.onInstallApk,
       super.key,
       required this.baseUrl,
       this.onDeleteApp,
@@ -26,11 +30,13 @@ class SquareAppCard extends StatelessWidget {
           IconButton(
             onPressed: app.apk.isEmpty
                 ? null
-                : () => showDialog(
-                      context: context,
-                      builder: (context) =>
-                          DownloadDialog(app: app, baseUrl: baseUrl),
-                    ),
+                : Platform.isAndroid
+                    ? () async => await onInstallApk(app, Arch.common)
+                    : () => showDialog(
+                          context: context,
+                          builder: (context) =>
+                              DownloadDialog(app: app, baseUrl: baseUrl),
+                        ),
             icon: const Icon(Icons.download),
           ),
           Column(

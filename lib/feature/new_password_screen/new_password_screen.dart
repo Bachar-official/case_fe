@@ -80,11 +80,9 @@ class NewPasswordScreen extends ConsumerWidget {
                                   bool isChanged =
                                       await manager.changePassword();
                                   if (isChanged && context.mounted) {
-                                    await manager.tokenRepo.clearToken();
-                                    await Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        AppRouter.appScreen,
-                                        (route) => false);
+                                    manager.tokenRepo.clearToken();
+                                    Navigator.pushNamedAndRemoveUntil(context,
+                                        AppRouter.appScreen, (route) => false);
                                   }
                                 }
                               },

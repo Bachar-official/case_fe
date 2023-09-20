@@ -2,12 +2,15 @@ import 'package:case_fe/const/theme.dart';
 import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/settings_repo.dart';
 import 'package:case_fe/data/repository/token_repo.dart';
+import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:install_plugin/install_plugin.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../domain/entity/app.dart';
 
@@ -100,6 +103,32 @@ class AppsManager {
       showSnackBar(key, Colors.red, e.toString());
     } finally {
       setLoading(false);
+    }
+  }
+
+  Future<bool> installApkNetwork(App app, Arch arch) async {
+    logger.d('Try to install app ${app.name}');
+    setLoading(true);
+    try {
+      var dir = await getTemporaryDirectory();
+      var savePath = '${dir.path}/app.apk';
+      await netRepo.dio.download(
+          netRepo.urls.downloadApkUrl(app: app, arch: arch), savePath);
+      final res = await InstallPlugin.install(savePath);
+      if (res['isSuccess'] == true) {
+        showSnackBar(
+            key, Colors.green, 'Приложение \'${app.name}\'установлено');
+        setLoading(false);
+        return true;
+      }
+      logger.w('Something wrong with installing app');
+      showSnackBar(key, Colors.yellow, 'Что-то пошло не так');
+      return false;
+    } catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red, e.toString());
+      setLoading(false);
+      return false;
     }
   }
 }

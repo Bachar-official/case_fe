@@ -34,8 +34,6 @@ class NewApkManager {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  TextEditingController packageC = TextEditingController();
-
   int _getFileSize() {
     if (holder.apkState.apk == null) {
       return 0;
@@ -53,11 +51,6 @@ class NewApkManager {
     } else {
       holder.setArch(arch);
     }
-  }
-
-  void clearPackage() {
-    holder.setPackage('');
-    packageC.value = TextEditingValue.empty;
   }
 
   void setFile() async {
@@ -89,18 +82,17 @@ class NewApkManager {
     }
   }
 
-  Future<bool> uploadApk() async {
+  Future<bool> uploadApk(String? packageName) async {
     logger.d('Try to upload an apk');
     setLoading(true);
     try {
       bool response = await netRepo.uploadApp(
-          holder.apkState.package,
+          packageName ?? holder.apkState.package,
           tokenRepo.token,
           holder.apkState.apk ?? '',
           holder.apkState.arch.name);
       if (response) {
         logger.i('APK uploaded');
-        clearPackage();
         setApk(null);
         await appsManager.onGetApps();
         setLoading(false);
