@@ -19,4 +19,8 @@ class AppsStateHolder extends StateNotifier<AppsState> {
   void setLoading(bool isLoading) {
     state = state.copyWith(isLoading: isLoading);
   }
+
+  void setDownloadProgress(double downloadProgress) {
+    state = state.copyWith(downloadProgress: downloadProgress);
+  }
 }

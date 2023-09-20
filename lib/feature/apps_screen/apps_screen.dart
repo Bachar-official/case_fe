@@ -12,6 +12,10 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 final provider =
     StateNotifierProvider<AppsStateHolder, AppsState>((ref) => di.appsHolder);
 
+const loadingIndicator = Center(
+  child: CircularProgressIndicator(),
+);
+
 class AppsScreen extends ConsumerWidget {
   const AppsScreen({super.key});
 
@@ -57,17 +61,16 @@ class AppsScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: manager.onGetApps,
         child: state.isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
+            ? loadingIndicator
             : EmptyListHandler(
                 listWidget: GridView.builder(
                   padding: const EdgeInsets.all(10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 0.95,
+                      childAspectRatio: 0.938,
                       crossAxisCount: kIsWeb ? screenSize.width ~/ 200 : 2),
                   itemCount: state.apps.length,
                   itemBuilder: (context, index) => SquareAppCard(
+                    progress: state.downloadProgress,
                     app: state.apps.elementAt(index),
                     onInstallApk: manager.installApkNetwork,
                     baseUrl: manager.baseUrl,

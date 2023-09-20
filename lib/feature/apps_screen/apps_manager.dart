@@ -6,6 +6,7 @@ import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:install_plugin/install_plugin.dart';
@@ -21,6 +22,7 @@ class AppsManager {
   final TokenRepo tokenRepo;
   final SettingsRepo settingsRepo;
   final GlobalKey<ScaffoldMessengerState> key;
+  final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
   String get baseUrl => netRepo.config.apiUrl;
 
@@ -53,6 +55,8 @@ class AppsManager {
   }
 
   void setLoading(bool isLoading) => holder.setLoading(isLoading);
+  void setDownloadProgress(double progress) =>
+      holder.setDownloadProgress(progress);
 
   void clearToken() async {
     logger.d('Try to clear token');
@@ -106,28 +110,40 @@ class AppsManager {
     }
   }
 
-  Future<bool> installApkNetwork(App app, Arch arch) async {
+  Future<bool> installApkNetwork(App app) async {
     logger.d('Try to install app ${app.name}');
-    setLoading(true);
+    setDownloadProgress(0.000000001);
     try {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      Arch arch = app.apk
+          .firstWhere(
+              (e) => e.arch == getArchFromAbi(androidInfo.supportedAbis[0]),
+              orElse: () =>
+                  app.apk.firstWhere((element) => element.arch == Arch.common))
+          .arch;
       var dir = await getTemporaryDirectory();
       var savePath = '${dir.path}/app.apk';
       await netRepo.dio.download(
-          netRepo.urls.downloadApkUrl(app: app, arch: arch), savePath);
+        netRepo.urls.downloadApkUrl(app: app, arch: arch),
+        savePath,
+        onReceiveProgress: (count, total) => setDownloadProgress(count / total),
+      );
       final res = await InstallPlugin.install(savePath);
       if (res['isSuccess'] == true) {
         showSnackBar(
-            key, Colors.green, 'Приложение \'${app.name}\'установлено');
-        setLoading(false);
+            key, Colors.green, 'Приложение \'${app.name}\' установлено');
+        setDownloadProgress(0);
         return true;
       }
       logger.w('Something wrong with installing app');
-      showSnackBar(key, Colors.yellow, 'Что-то пошло не так');
+      showSnackBar(
+          key, Colors.yellow, res['errorMessage'] ?? 'Что-то пошло не так');
+      setDownloadProgress(0);
       return false;
     } catch (e, s) {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());
-      setLoading(false);
+      setDownloadProgress(0);
       return false;
     }
   }

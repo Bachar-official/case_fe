@@ -7,14 +7,18 @@ import 'dart:io' show Platform;
 
 const emptyPlace = SizedBox.shrink();
 
+final emptySpace = Container();
+
 class SquareAppCard extends StatelessWidget {
   final App app;
   final String baseUrl;
   final void Function(App)? onDeleteApp;
   final void Function()? onUploadApk;
-  final Future<void> Function(App, Arch) onInstallApk;
+  final Future<void> Function(App) onInstallApk;
+  final double progress;
   const SquareAppCard(
       {required this.app,
+      required this.progress,
       required this.onInstallApk,
       super.key,
       required this.baseUrl,
@@ -31,7 +35,9 @@ class SquareAppCard extends StatelessWidget {
             onPressed: app.apk.isEmpty
                 ? null
                 : Platform.isAndroid
-                    ? () async => await onInstallApk(app, Arch.common)
+                    ? progress != 0
+                        ? null
+                        : () async => await onInstallApk(app)
                     : () => showDialog(
                           context: context,
                           builder: (context) =>
@@ -88,7 +94,12 @@ class SquareAppCard extends StatelessWidget {
                               ),
                       ],
                     )
-                  : Container(),
+                  : emptySpace,
+              progress == 0
+                  ? emptySpace
+                  : LinearProgressIndicator(
+                      value: progress,
+                    ),
             ],
           )
         ],
