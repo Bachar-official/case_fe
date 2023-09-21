@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:case_fe/app/di.dart';
 import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state_holder.dart';
 import 'package:case_fe/utils/validator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -87,16 +89,18 @@ class NewAppScreen extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            state.icon == null
+                            state.icon == null && state.webIcon == null
                                 ? const Text('Изображение не прикреплено')
                                 : SizedBox(
                                     height: 100,
                                     child: Stack(
                                       children: [
-                                        Image.memory(
-                                          base64.decode(state.icon!),
-                                          fit: BoxFit.fitHeight,
-                                        ),
+                                        kIsWeb
+                                            ? Image.memory(
+                                                state.webIcon!,
+                                                fit: BoxFit.fitHeight,
+                                              )
+                                            : Image.file(state.icon!),
                                         Positioned(
                                           top: 0,
                                           right: 0,

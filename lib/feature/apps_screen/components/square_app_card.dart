@@ -14,7 +14,7 @@ class SquareAppCard extends StatelessWidget {
   final String baseUrl;
   final void Function(App)? onDeleteApp;
   final void Function()? onUploadApk;
-  final Future<void> Function(App) onInstallApk;
+  final Future<void> Function(App)? onInstallApk;
   final double progress;
   const SquareAppCard(
       {required this.app,
@@ -34,10 +34,10 @@ class SquareAppCard extends StatelessWidget {
           IconButton(
             onPressed: app.apk.isEmpty
                 ? null
-                : Platform.isAndroid
+                : onInstallApk != null
                     ? progress != 0
                         ? null
-                        : () async => await onInstallApk(app)
+                        : () async => await onInstallApk!(app)
                     : () => showDialog(
                           context: context,
                           builder: (context) =>
@@ -50,6 +50,8 @@ class SquareAppCard extends StatelessWidget {
             children: [
               Image.network(
                 '$baseUrl${app.iconPath}',
+                width: 100,
+                fit: BoxFit.cover,
                 errorBuilder: (context, _, __) {
                   return const Icon(
                     Icons.image_not_supported_outlined,

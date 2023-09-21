@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/token_repo.dart';
@@ -7,6 +8,7 @@ import 'package:case_fe/feature/apps_screen/apps_manager.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
@@ -43,13 +45,22 @@ class NewAppManager {
 
   void setIcon(XFile? file) async {
     logger.d('Setting icon');
-    if (file == null) {
-      holder.setIcon(null);
-      logger.i('Icon cleared');
-    } else {
-      String b64 = base64Encode(await file.readAsBytes());
-      holder.setIcon(b64);
-      logger.d('Icon set');
+    if (kIsWeb) {
+      if (file == null) {
+        holder.setWebIcon(null);
+        logger.i('Web icon cleared');
+      } else {
+        holder.setWebIcon(await file.readAsBytes());
+        logger.d('Web icon set');
+      }
+    } else if (Platform.isAndroid) {
+      if (file == null) {
+        holder.setIcon(null);
+        logger.i('Icon cleared');
+      } else {
+        holder.setIcon(File(file.path));
+        logger.d('Icon set');
+      }
     }
   }
 
@@ -85,7 +96,11 @@ class NewAppManager {
           holder.appState.package,
           holder.appState.name,
           holder.appState.version,
-          holder.appState.icon,
+          kIsWeb
+              ? holder.appState.webIcon == null
+                  ? null
+                  : File.fromRawPath(holder.appState.webIcon!)
+              : holder.appState.icon,
           holder.appState.description,
           tokenRepo.token);
       if (response) {

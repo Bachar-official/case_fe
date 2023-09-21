@@ -72,7 +72,7 @@ class AppsScreen extends ConsumerWidget {
                   itemBuilder: (context, index) => SquareAppCard(
                     progress: state.downloadProgress,
                     app: state.apps.elementAt(index),
-                    onInstallApk: manager.installApkNetwork,
+                    onInstallApk: kIsWeb ? null : manager.installApkNetwork,
                     baseUrl: manager.baseUrl,
                     onDeleteApp:
                         manager.isAuthorized ? manager.onDeleteApp : null,

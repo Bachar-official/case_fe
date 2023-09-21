@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:case_fe/feature/new_app_screen/new_app_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,11 +25,19 @@ class NewAppStateHolder extends StateNotifier<NewAppState> {
     state = state.copyWith(version: version);
   }
 
-  void setIcon(String? icon) {
+  void setIcon(File? icon) {
     if (icon == null) {
       state = state.copyWith(nullIcon: true, icon: icon);
     } else {
       state = state.copyWith(icon: icon);
+    }
+  }
+
+  void setWebIcon(Uint8List? webIcon) {
+    if (webIcon == null) {
+      state = state.copyWith(nullIcon: true, webIcon: webIcon);
+    } else {
+      state = state.copyWith(webIcon: webIcon);
     }
   }
 

@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:case_fe/app/app_config.dart';
 import 'package:case_fe/const/urls.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/domain/entity/user.dart';
+import 'package:case_fe/utils/modify_map.dart';
 import 'package:case_fe/utils/parse_entities.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -41,16 +43,17 @@ class NetRepo {
   }
 
   Future<bool> createApp(String package, String name, String version,
-      String? icon, String description, String token) async {
+      File? icon, String description, String token) async {
+    Map<String, dynamic> data = removeNullMapValues({
+      'token': token,
+      'name': name,
+      'version': version,
+      'description': description.isEmpty ? null : description,
+      'icon': icon
+    });
     var response = await dio.post(urls.appInfoUrl(package),
         options: Options(method: postMethod, headers: contentTypeHeader),
-        data: {
-          'token': token,
-          'name': name,
-          'version': version,
-          'description': description.isEmpty ? null : description,
-          'icon': icon
-        });
+        data: FormData.fromMap(data));
     if (response.statusCode == 200) {
       return true;
     }
