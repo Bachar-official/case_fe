@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +21,7 @@ class NewApkStateHolder extends StateNotifier<NewApkState> {
     state = state.copyWith(arch: arch);
   }
 
-  void setApk(String? apk) {
+  void setApk(Uint8List? apk) {
     if (apk == null) {
       state = state.copyWith(nullApk: true, apk: null);
     } else {

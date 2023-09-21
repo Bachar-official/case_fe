@@ -77,8 +77,7 @@ class NewApkManager {
     if (bytes == null) {
       holder.setApk(null);
     } else {
-      String b64file = base64Encode(bytes);
-      holder.setApk(b64file);
+      holder.setApk(bytes);
     }
   }
 
@@ -89,7 +88,7 @@ class NewApkManager {
       bool response = await netRepo.uploadApp(
           packageName ?? holder.apkState.package,
           tokenRepo.token,
-          holder.apkState.apk ?? '',
+          holder.apkState.apk!,
           holder.apkState.arch.name);
       if (response) {
         logger.i('APK uploaded');

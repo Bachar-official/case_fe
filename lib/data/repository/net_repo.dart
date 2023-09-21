@@ -71,10 +71,12 @@ class NetRepo {
   }
 
   Future<bool> uploadApp(
-      String package, String token, String body, String arch) async {
+      String package, String token, Uint8List body, String arch) async {
+    Map<String, dynamic> data = removeNullMapValues(
+        {'token': token, 'apk': File.fromRawPath(body), 'arch': arch});
     var response = await dio.post(urls.uploadApkUrl(package: package),
         options: Options(method: postMethod, headers: contentTypeHeader),
-        data: {'token': token, 'body': body, 'arch': arch});
+        data: FormData.fromMap(data));
     if (response.statusCode == 200) {
       return true;
     }

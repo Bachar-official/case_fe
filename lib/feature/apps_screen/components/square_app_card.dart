@@ -1,9 +1,7 @@
-import 'package:case_fe/domain/entity/arch.dart';
 import 'package:case_fe/feature/apps_screen/components/download_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/entity/app.dart';
-import 'dart:io' show Platform;
 
 const emptyPlace = SizedBox.shrink();
 

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:case_fe/domain/entity/arch.dart';
 import 'package:flutter/material.dart';
 
@@ -5,7 +7,7 @@ import 'package:flutter/material.dart';
 class NewApkState {
   final Arch arch;
   final String package;
-  final String? apk;
+  final Uint8List? apk;
   final bool isLoading;
 
   const NewApkState(
@@ -24,7 +26,7 @@ class NewApkState {
           {Arch? arch,
           String? package,
           bool? isLoading,
-          String? apk,
+          Uint8List? apk,
           bool nullApk = false}) =>
       NewApkState(
           apk: nullApk ? null : apk ?? this.apk,
