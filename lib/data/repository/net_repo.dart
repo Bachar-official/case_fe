@@ -42,14 +42,24 @@ class NetRepo {
     }
   }
 
-  Future<bool> createApp(String package, String name, String version,
-      File? icon, String description, String token) async {
+  Future<bool> createApp(
+      {required String package,
+      required String name,
+      required String version,
+      File? icon,
+      Uint8List? webIcon,
+      required String description,
+      required String token}) async {
     Map<String, dynamic> data = removeNullMapValues({
       'token': token,
       'name': name,
       'version': version,
       'description': description.isEmpty ? null : description,
-      'icon': icon
+      'icon': icon == null && webIcon == null
+          ? null
+          : kIsWeb
+              ? MultipartFile.fromBytes(webIcon!, filename: 'icon.png')
+              : MultipartFile.fromFileSync(icon!.path, filename: 'icon.png')
     });
     var response = await dio.post(urls.appInfoUrl(package),
         options: Options(method: postMethod, headers: contentTypeHeader),

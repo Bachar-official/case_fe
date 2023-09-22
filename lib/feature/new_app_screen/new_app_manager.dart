@@ -44,22 +44,19 @@ class NewAppManager {
 
   void setIcon(XFile? file) async {
     logger.d('Setting icon');
-    if (kIsWeb) {
-      if (file == null) {
-        holder.setWebIcon(null);
-        logger.i('Web icon cleared');
-      } else {
-        holder.setWebIcon(await file.readAsBytes());
-        logger.d('Web icon set');
-      }
-    } else if (Platform.isAndroid) {
-      if (file == null) {
-        holder.setIcon(null);
-        logger.i('Icon cleared');
+    if (file == null) {
+      holder.setIcon(null);
+      holder.setWebIcon(null);
+      logger.i('Icon cleared');
+    } else {
+      if (kIsWeb) {
+        var bytes = await file.readAsBytes();
+        holder.setWebIcon(bytes);
       } else {
         holder.setIcon(File(file.path));
-        logger.d('Icon set');
       }
+
+      logger.d('Icon set');
     }
   }
 
@@ -92,16 +89,13 @@ class NewAppManager {
     setLoading(true);
     try {
       var response = await netRepo.createApp(
-          holder.appState.package,
-          holder.appState.name,
-          holder.appState.version,
-          kIsWeb
-              ? holder.appState.webIcon == null
-                  ? null
-                  : File.fromRawPath(holder.appState.webIcon!)
-              : holder.appState.icon,
-          holder.appState.description,
-          tokenRepo.token);
+          package: holder.appState.package,
+          name: holder.appState.name,
+          version: holder.appState.version,
+          icon: holder.appState.icon,
+          webIcon: holder.appState.webIcon,
+          description: holder.appState.description,
+          token: tokenRepo.token);
       if (response) {
         logger.i('App created');
         clearName();

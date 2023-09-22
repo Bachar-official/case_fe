@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:case_fe/app/di.dart';
 import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state.dart';
@@ -93,11 +95,9 @@ class NewAppScreen extends ConsumerWidget {
                                     child: Stack(
                                       children: [
                                         kIsWeb
-                                            ? Image.memory(
-                                                state.webIcon!,
-                                                fit: BoxFit.fitHeight,
-                                              )
-                                            : Image.file(state.icon!),
+                                            ? Image.memory(state.webIcon!)
+                                            : Image.file(
+                                                File(state.icon!.path)),
                                         Positioned(
                                           top: 0,
                                           right: 0,
