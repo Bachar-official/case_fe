@@ -4,6 +4,8 @@ import 'package:case_fe/data/repository/settings_repo.dart';
 import 'package:case_fe/data/repository/token_repo.dart';
 import 'package:case_fe/feature/apps_screen/apps_manager.dart';
 import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
+import 'package:case_fe/feature/edit_app_screen/edit_app_manager.dart';
+import 'package:case_fe/feature/edit_app_screen/edit_app_state_holder.dart';
 import 'package:case_fe/feature/home_screen/home_manager.dart';
 import 'package:case_fe/feature/home_screen/home_state_holder.dart';
 import 'package:case_fe/feature/login_screen/login_manager.dart';
@@ -41,6 +43,7 @@ class DI {
   late final NewUserManager newUserManager;
   late final NewAppManager newAppManager;
   late final NewApkManager newApkManager;
+  late final EditAppManager editAppManager;
 
   final Logger logger = Logger();
   final Dio dio = Dio();
@@ -58,6 +61,7 @@ class DI {
   final NewUserStateHolder newUserHolder = NewUserStateHolder();
   final NewAppStateHolder newAppHolder = NewAppStateHolder();
   final NewApkStateHolder newApkHolder = NewApkStateHolder();
+  final EditAppStateHolder editAppHolder = EditAppStateHolder();
 
   DI();
 
@@ -119,6 +123,13 @@ class DI {
         holder: newApkHolder,
         key: scaffoldKey,
         logger: logger,
+        netRepo: netRepo,
+        tokenRepo: tokenRepo);
+    editAppManager = EditAppManager(
+        appsManager: appsManager,
+        logger: logger,
+        holder: editAppHolder,
+        key: scaffoldKey,
         netRepo: netRepo,
         tokenRepo: tokenRepo);
 

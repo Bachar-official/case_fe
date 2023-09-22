@@ -70,6 +70,34 @@ class NetRepo {
     return false;
   }
 
+  Future<bool> updateApp(
+      {required String package,
+      required String token,
+      required String name,
+      required String version,
+      required String description,
+      File? icon,
+      Uint8List? webIcon}) async {
+    Map<String, dynamic> data = removeNullMapValues({
+      'token': token,
+      'name': name,
+      'version': version,
+      'description': description,
+      'icon': icon == null && webIcon == null
+          ? null
+          : kIsWeb
+              ? MultipartFile.fromBytes(webIcon!, filename: 'icon.png')
+              : MultipartFile.fromFileSync(icon!.path, filename: 'icon.png')
+    });
+    var response = await dio.patch(urls.appInfoUrl(package),
+        options: Options(method: patchMethod, headers: contentTypeHeader),
+        data: FormData.fromMap(data));
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
   Future<bool> deleteApp(String package, String token) async {
     var response = await dio.delete(urls.appPackageUrl(package),
         options: Options(method: deleteMethod, headers: contentTypeHeader),

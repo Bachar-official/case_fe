@@ -3,7 +3,7 @@ Map<String, dynamic> removeNullMapValues(Map<String, dynamic> map) {
 
   // Находим ключи с значениями null
   map.forEach((key, value) {
-    if (value == null) {
+    if (value == null || value == '') {
       keysToRemove.add(key);
     }
   });
