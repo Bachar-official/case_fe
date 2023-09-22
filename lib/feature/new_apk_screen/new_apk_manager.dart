@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/token_repo.dart';
 import 'package:case_fe/domain/entity/arch.dart';
