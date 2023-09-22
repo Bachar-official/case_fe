@@ -1,3 +1,4 @@
+import 'package:case_fe/app/routing.dart';
 import 'package:case_fe/feature/apps_screen/components/download_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +48,7 @@ class SquareAppCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Image.network(
-                '$baseUrl${app.iconPath}',
+                '$baseUrl${app.iconPath}?${DateTime.now().millisecondsSinceEpoch.toString()}',
                 width: 100,
                 fit: BoxFit.cover,
                 errorBuilder: (context, _, __) {
@@ -86,6 +87,12 @@ class SquareAppCard extends StatelessWidget {
                                 icon: const Icon(Icons.upload),
                                 onPressed: onUploadApk,
                               ),
+                        IconButton(
+                          onPressed: () => Navigator.pushNamed(
+                              context, AppRouter.editAppScreen,
+                              arguments: app),
+                          icon: const Icon(Icons.edit),
+                        ),
                         onDeleteApp == null
                             ? emptyPlace
                             : IconButton(

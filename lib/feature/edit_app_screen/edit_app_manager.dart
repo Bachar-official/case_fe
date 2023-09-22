@@ -5,6 +5,8 @@ import 'package:case_fe/data/repository/token_repo.dart';
 import 'package:case_fe/domain/entity/permission.dart';
 import 'package:case_fe/feature/apps_screen/apps_manager.dart';
 import 'package:case_fe/feature/edit_app_screen/edit_app_state_holder.dart';
+import 'package:case_fe/utils/show_snackbar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,13 +30,15 @@ class EditAppManager {
 
   bool get canUpdate => tokenRepo.permission?.canUpdate ?? false;
 
-  final TextEditingController nameC = TextEditingController();
-  final TextEditingController versionC = TextEditingController();
-  final TextEditingController descriptionC = TextEditingController();
+  late final TextEditingController nameC =
+      TextEditingController(text: holder.editState.name);
+  late final TextEditingController versionC =
+      TextEditingController(text: holder.editState.version);
+  late final TextEditingController descriptionC =
+      TextEditingController(text: holder.editState.description);
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  void setName(String name) => holder.setName(name);
-  void setVersion(String version) => holder.setVersion(version);
-  void setDescription(String description) => holder.setDescription(description);
+  void setLoading(bool isLoading) => holder.setLoading(isLoading);
 
   void setIcon(XFile? file) async {
     logger.d('Try to set icon');
@@ -53,20 +57,46 @@ class EditAppManager {
     }
   }
 
-  void clearName() {
-    setName('');
-    nameC.value = TextEditingValue.empty;
-  }
-
-  void clearVersion() {
-    setVersion('');
-    versionC.value = TextEditingValue.empty;
-  }
-
-  void clearDescription() {
-    setDescription('');
-    descriptionC.value = TextEditingValue.empty;
+  void collectData() {
+    holder.setName(nameC.text);
+    holder.setVersion(versionC.text);
+    holder.setDescription(descriptionC.text);
   }
 
   void clearIcon() => setIcon(null);
+
+  Future<bool> updateApp(String package) async {
+    collectData();
+    logger.d('Try to update app ${holder.editState.name}');
+    setLoading(true);
+    try {
+      var response = await netRepo.updateApp(
+          package: package,
+          token: tokenRepo.token,
+          name: holder.editState.name,
+          version: holder.editState.version,
+          description: holder.editState.description,
+          icon: holder.editState.icon,
+          webIcon: holder.editState.webIcon);
+      if (response) {
+        logger.i('App updated');
+        setLoading(false);
+        await appsManager.onGetApps();
+        return response;
+      }
+      logger.w('Something wrong with editing app');
+      showSnackBar(key, Colors.yellow, 'Что-то пошло не так');
+      return response;
+    } on DioException catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red, e.response?.data);
+      setLoading(false);
+      return false;
+    } on Exception catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(key, Colors.red, e.toString());
+      setLoading(false);
+      return false;
+    }
+  }
 }

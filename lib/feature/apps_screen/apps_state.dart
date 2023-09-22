@@ -24,6 +24,7 @@ class AppsState {
   AppsState copyWith(
           {ColorTheme? theme,
           List<App>? apps,
+          App? selectedApp,
           bool? isLoading,
           double? downloadProgress}) =>
       AppsState(

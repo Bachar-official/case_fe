@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:case_fe/app/di.dart';
 import 'package:case_fe/app/routing.dart';
+import 'package:case_fe/feature/components/preview_image.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state.dart';
 import 'package:case_fe/feature/new_app_screen/new_app_state_holder.dart';
 import 'package:case_fe/utils/validator.dart';
@@ -88,27 +89,11 @@ class NewAppScreen extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            state.icon == null && state.webIcon == null
-                                ? const Text('Изображение не прикреплено')
-                                : SizedBox(
-                                    height: 100,
-                                    child: Stack(
-                                      children: [
-                                        kIsWeb
-                                            ? Image.memory(state.webIcon!)
-                                            : Image.file(
-                                                File(state.icon!.path)),
-                                        Positioned(
-                                          top: 0,
-                                          right: 0,
-                                          child: GestureDetector(
-                                            onTap: manager.clearIcon,
-                                            child: clearIcon,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                            PreviewImage(
+                                isWeb: kIsWeb,
+                                icon: state.icon,
+                                onClearIcon: manager.clearIcon,
+                                webIcon: state.webIcon),
                             ElevatedButton(
                               onPressed: () async {
                                 final XFile? image = await ImagePicker()

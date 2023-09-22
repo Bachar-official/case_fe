@@ -1,3 +1,4 @@
+import 'package:case_fe/feature/edit_app_screen/edit_app_screen.dart';
 import 'package:case_fe/feature/home_screen/home_screen.dart';
 import 'package:case_fe/feature/login_screen/login_screen.dart';
 import 'package:case_fe/feature/new_apk_screen/new_apk_screen.dart';
@@ -27,6 +28,8 @@ class AppRouter {
         return _buildRoute((context) => const NewAppScreen(), settings);
       case newApkScreen:
         return _buildRoute((context) => const NewApkScreen(), settings);
+      case editAppScreen:
+        return _buildRoute((context) => const EditAppScreen(), settings);
       default:
         throw Exception('Invalid route: ${settings.name}');
     }
@@ -40,6 +43,7 @@ class AppRouter {
   static const newUserScreen = '/newUser';
   static const newAppScreen = '/newApp';
   static const newApkScreen = '/newApk';
+  static const editAppScreen = '/editApk';
 }
 
 MaterialPageRoute _buildRoute(WidgetBuilder builder, RouteSettings settings) {
