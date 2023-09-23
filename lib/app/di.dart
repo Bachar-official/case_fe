@@ -73,6 +73,13 @@ class DI {
     settingsRepo = SettingsRepo(settingsBox: settingsBox);
     tokenRepo = TokenRepo(tokenBox: tokenBox);
 
+    dio.interceptors.add(InterceptorsWrapper(onError: (e, handler) async {
+      if (e.response!.statusCode == 401) {
+        await tokenRepo.clearToken();
+        handler.reject(e);
+      }
+    }));
+
     homeManager = HomeManager(holder: homeHolder);
     appsManager = AppsManager(
         tokenRepo: tokenRepo,

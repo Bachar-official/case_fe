@@ -78,6 +78,10 @@ class AppsManager {
         holder.setApps(response);
         logger.i('Got ${response.length} apps');
       }
+    } on DioException catch (e, s) {
+      logger.e(e.message, stackTrace: s);
+      showSnackBar(key, Colors.red,
+          e.response?.data ?? 'Ошибка при получении списка приложений');
     } on Exception catch (e, s) {
       logger.e(e, stackTrace: s);
       showSnackBar(key, Colors.red, e.toString());

@@ -13,6 +13,7 @@ final provider = StateNotifierProvider<NewAppStateHolder, NewAppState>(
     (ref) => di.newAppHolder);
 
 const clearIcon = Icon(Icons.clear);
+const padding = EdgeInsets.all(5);
 
 class NewAppScreen extends ConsumerWidget {
   const NewAppScreen({Key? key}) : super(key: key);
@@ -35,84 +36,107 @@ class NewAppScreen extends ConsumerWidget {
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
-                    : Form(
-                        key: manager.formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextFormField(
-                              controller: manager.nameC,
-                              validator: Validator.validateEmpty,
-                              onChanged: manager.setName,
-                              decoration: InputDecoration(
-                                labelText: 'Название приложения',
-                                suffix: IconButton(
-                                  icon: clearIcon,
-                                  onPressed: manager.clearName,
+                    : Center(
+                        child: SizedBox(
+                          width: 500,
+                          child: Form(
+                            key: manager.formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                TextFormField(
+                                  controller: manager.nameC,
+                                  validator: Validator.validateEmpty,
+                                  onChanged: manager.setName,
+                                  decoration: InputDecoration(
+                                    labelText: 'Название приложения',
+                                    suffix: IconButton(
+                                      icon: clearIcon,
+                                      onPressed: manager.clearName,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            TextFormField(
-                              controller: manager.packageC,
-                              validator: Validator.validatePackage,
-                              onChanged: manager.setPackage,
-                              decoration: InputDecoration(
-                                labelText: 'Package',
-                                suffix: IconButton(
-                                  icon: clearIcon,
-                                  onPressed: manager.clearPackage,
+                                TextFormField(
+                                  controller: manager.packageC,
+                                  validator: Validator.validatePackage,
+                                  onChanged: manager.setPackage,
+                                  decoration: InputDecoration(
+                                    labelText: 'Package',
+                                    suffix: IconButton(
+                                      icon: clearIcon,
+                                      onPressed: manager.clearPackage,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            TextFormField(
-                              controller: manager.versionC,
-                              validator: Validator.validateVersion,
-                              onChanged: manager.setVersion,
-                              decoration: InputDecoration(
-                                labelText: 'Версия',
-                                suffix: IconButton(
-                                  icon: clearIcon,
-                                  onPressed: manager.clearVersion,
+                                TextFormField(
+                                  controller: manager.versionC,
+                                  validator: Validator.validateVersion,
+                                  onChanged: manager.setVersion,
+                                  decoration: InputDecoration(
+                                    labelText: 'Версия',
+                                    suffix: IconButton(
+                                      icon: clearIcon,
+                                      onPressed: manager.clearVersion,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            TextFormField(
-                              controller: manager.descriptionC,
-                              onChanged: manager.setDescription,
-                              decoration: InputDecoration(
-                                labelText: 'Описание',
-                                suffix: IconButton(
-                                  icon: clearIcon,
-                                  onPressed: manager.clearDescription,
+                                TextFormField(
+                                  controller: manager.descriptionC,
+                                  onChanged: manager.setDescription,
+                                  decoration: InputDecoration(
+                                    labelText: 'Описание',
+                                    suffix: IconButton(
+                                      icon: clearIcon,
+                                      onPressed: manager.clearDescription,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Padding(
+                                  padding: padding,
+                                  child: PreviewImage(
+                                      isWeb: kIsWeb,
+                                      icon: state.icon,
+                                      onClearIcon: manager.clearIcon,
+                                      webIcon: state.webIcon),
+                                ),
+                                Padding(
+                                  padding: padding,
+                                  child: ElevatedButton(
+                                    onPressed: state.icon != null ||
+                                            state.webIcon != null
+                                        ? null
+                                        : () async {
+                                            final XFile? image =
+                                                await ImagePicker().pickImage(
+                                                    source:
+                                                        ImageSource.gallery);
+                                            manager.setIcon(image);
+                                          },
+                                    child: const Text('Прикрепить изображение'),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: padding,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      if (manager.formKey.currentState!
+                                          .validate()) {
+                                        bool isCreated =
+                                            await manager.createApp();
+                                        if (isCreated && context.mounted) {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              AppRouter.appScreen,
+                                              (route) => false);
+                                        }
+                                      }
+                                    },
+                                    child: const Text('Загрузить'),
+                                  ),
+                                ),
+                              ],
                             ),
-                            PreviewImage(
-                                isWeb: kIsWeb,
-                                icon: state.icon,
-                                onClearIcon: manager.clearIcon,
-                                webIcon: state.webIcon),
-                            ElevatedButton(
-                              onPressed: () async {
-                                final XFile? image = await ImagePicker()
-                                    .pickImage(source: ImageSource.gallery);
-                                manager.setIcon(image);
-                              },
-                              child: const Text('Загрузить изображение'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (manager.formKey.currentState!.validate()) {
-                                  bool isCreated = await manager.createApp();
-                                  if (isCreated && context.mounted) {
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        AppRouter.appScreen, (route) => false);
-                                  }
-                                }
-                              },
-                              child: const Text('Загрузить'),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
               ),
