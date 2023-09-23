@@ -66,11 +66,14 @@ class AppsScreen extends ConsumerWidget {
                 listWidget: GridView.builder(
                   padding: const EdgeInsets.all(10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 0.938,
+                      childAspectRatio: manager.isAuthorized ? 0.81 : 0.95,
                       crossAxisCount: kIsWeb ? screenSize.width ~/ 200 : 2),
                   itemCount: state.apps.length,
                   itemBuilder: (context, index) => SquareAppCard(
-                    progress: state.downloadProgress,
+                    progress:
+                        manager.isThisAppIsntalling(state.apps.elementAt(index))
+                            ? state.downloadProgress
+                            : 0,
                     app: state.apps.elementAt(index),
                     onInstallApk: kIsWeb ? null : manager.installApkNetwork,
                     baseUrl: manager.baseUrl,

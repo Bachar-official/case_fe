@@ -14,6 +14,9 @@ import 'package:image_picker/image_picker.dart';
 final provider = StateNotifierProvider<EditAppStateHolder, EditAppState>(
     (ref) => di.editAppHolder);
 
+const clearIcon = Icon(Icons.clear);
+const padding = EdgeInsets.all(5);
+
 class EditAppScreen extends ConsumerWidget {
   const EditAppScreen({Key? key}) : super(key: key);
 
@@ -41,72 +44,95 @@ class EditAppScreen extends ConsumerWidget {
           ? Center(
               child: state.isLoading
                   ? const CircularProgressIndicator()
-                  : Form(
-                      key: manager.formKey,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: manager.nameC,
-                              decoration: InputDecoration(
-                                labelText: 'Название',
-                                suffix: IconButton(
-                                  onPressed: () => manager.nameC.text = '',
-                                  icon: const Icon(Icons.clear),
+                  : Center(
+                      child: SizedBox(
+                        width: 500,
+                        child: Form(
+                          key: manager.formKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: manager.nameC,
+                                  decoration: InputDecoration(
+                                    labelText: 'Название',
+                                    suffix: IconButton(
+                                      onPressed: () => manager.nameC.text = '',
+                                      icon: clearIcon,
+                                    ),
+                                  ),
+                                  validator: Validator.validateEmpty,
                                 ),
-                              ),
-                              validator: Validator.validateEmpty,
-                            ),
-                            TextFormField(
-                              controller: manager.versionC,
-                              decoration: InputDecoration(
-                                labelText: 'Версия',
-                                suffix: IconButton(
-                                  onPressed: () => manager.versionC.text = '',
-                                  icon: const Icon(Icons.clear),
+                                TextFormField(
+                                  controller: manager.versionC,
+                                  decoration: InputDecoration(
+                                    labelText: 'Версия',
+                                    suffix: IconButton(
+                                      onPressed: () =>
+                                          manager.versionC.text = '',
+                                      icon: clearIcon,
+                                    ),
+                                  ),
+                                  validator: Validator.validateVersion,
                                 ),
-                              ),
-                              validator: Validator.validateVersion,
-                            ),
-                            TextFormField(
-                              controller: manager.descriptionC,
-                              decoration: InputDecoration(
-                                labelText: 'Описание',
-                                suffix: IconButton(
-                                  onPressed: () =>
-                                      manager.descriptionC.text = '',
-                                  icon: const Icon(Icons.clear),
+                                TextFormField(
+                                  controller: manager.descriptionC,
+                                  decoration: InputDecoration(
+                                    labelText: 'Описание',
+                                    suffix: IconButton(
+                                      onPressed: () =>
+                                          manager.descriptionC.text = '',
+                                      icon: clearIcon,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Padding(
+                                  padding: padding,
+                                  child: PreviewImage(
+                                      isWeb: kIsWeb,
+                                      icon: state.icon,
+                                      onClearIcon: manager.clearIcon,
+                                      webIcon: state.webIcon),
+                                ),
+                                Padding(
+                                  padding: padding,
+                                  child: ElevatedButton(
+                                    onPressed: state.icon != null ||
+                                            state.webIcon != null
+                                        ? null
+                                        : () async {
+                                            final XFile? image =
+                                                await ImagePicker().pickImage(
+                                                    source:
+                                                        ImageSource.gallery);
+                                            manager.setIcon(image);
+                                          },
+                                    child: const Text('Прикрепить изображение'),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: padding,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      if (manager.formKey.currentState!
+                                          .validate()) {
+                                        bool isCreated = await manager
+                                            .updateApp(app.package);
+                                        if (isCreated && context.mounted) {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              AppRouter.appScreen,
+                                              (route) => false);
+                                        }
+                                      }
+                                    },
+                                    child: const Text('Обновить'),
+                                  ),
+                                ),
+                              ],
                             ),
-                            PreviewImage(
-                                isWeb: kIsWeb,
-                                icon: state.icon,
-                                onClearIcon: manager.clearIcon,
-                                webIcon: state.webIcon),
-                            ElevatedButton(
-                              onPressed: () async {
-                                final XFile? image = await ImagePicker()
-                                    .pickImage(source: ImageSource.gallery);
-                                manager.setIcon(image);
-                              },
-                              child: const Text('Загрузить изображение'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (manager.formKey.currentState!.validate()) {
-                                  bool isCreated =
-                                      await manager.updateApp(app.package);
-                                  if (isCreated && context.mounted) {
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        AppRouter.appScreen, (route) => false);
-                                  }
-                                }
-                              },
-                              child: const Text('Обновить'),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),

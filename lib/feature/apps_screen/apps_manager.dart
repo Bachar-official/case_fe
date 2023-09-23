@@ -23,6 +23,7 @@ class AppsManager {
   final SettingsRepo settingsRepo;
   final GlobalKey<ScaffoldMessengerState> key;
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  App? installingApp;
 
   String get baseUrl => netRepo.config.apiUrl;
 
@@ -41,6 +42,13 @@ class AppsManager {
   bool get canUpload => tokenRepo.permission?.canUpload ?? false;
   String get username => tokenRepo.username;
   String get shortUsername => tokenRepo.shortUsername;
+
+  bool isThisAppIsntalling(App app) {
+    if (installingApp == null) {
+      return false;
+    }
+    return app.package == installingApp!.package;
+  }
 
   void setTheme() async {
     logger.d('Try to change and save theme');
@@ -116,6 +124,7 @@ class AppsManager {
 
   Future<bool> installApkNetwork(App app) async {
     logger.d('Try to install app ${app.name}');
+    installingApp = app;
     setDownloadProgress(0.000000001);
     try {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -149,6 +158,8 @@ class AppsManager {
       showSnackBar(key, Colors.red, e.toString());
       setDownloadProgress(0);
       return false;
+    } finally {
+      installingApp = null;
     }
   }
 }
