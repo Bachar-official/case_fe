@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:case_fe/const/theme.dart';
 import 'package:case_fe/data/repository/net_repo.dart';
 import 'package:case_fe/data/repository/settings_repo.dart';
@@ -8,8 +10,11 @@ import 'package:case_fe/feature/apps_screen/apps_state_holder.dart';
 import 'package:case_fe/utils/show_snackbar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:install_plugin/install_plugin.dart';
+import 'package:installed_apps/app_info.dart';
+import 'package:installed_apps/installed_apps.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -50,6 +55,26 @@ class AppsManager {
     return app.package == installingApp!.package;
   }
 
+  Future<void> getInstalledApps() async {
+    logger.d('Try to get installed apps');
+    try {
+      List<AppInfo> apps = await InstalledApps.getInstalledApps();
+      List<App> inApps = apps
+          .map((app) => App(
+              name: app.name ?? 'No name',
+              package: app.packageName ?? 'No package',
+              version: app.versionName ?? 'No version',
+              apk: []))
+          .toList();
+      logger.i('Got ${inApps.length} installed apps');
+      holder.setInstalledApps(inApps);
+    } catch (e, s) {
+      logger.e(e, stackTrace: s);
+      showSnackBar(
+          key, Colors.red, 'Ошибка при получении установленных приложений');
+    }
+  }
+
   void setTheme() async {
     logger.d('Try to change and save theme');
     if (holder.appsState.theme == ColorTheme.dark) {
@@ -75,6 +100,10 @@ class AppsManager {
   }
 
   Future<void> onGetApps() async {
+    if (Platform.isAndroid) {
+      await getInstalledApps();
+      holder.appsState.installedApps.forEach(print);
+    }
     logger.d('Request all apps');
     setLoading(true);
     try {
@@ -120,6 +149,13 @@ class AppsManager {
     } finally {
       setLoading(false);
     }
+  }
+
+  bool isUpdateAvailable(App app) {
+    return holder.appsState.installedApps.firstWhere(
+            (inApp) => inApp.package == app.package,
+            orElse: () => app.changeWith(version: '0.0.0')) <
+        app;
   }
 
   Future<bool> installApkNetwork(App app) async {

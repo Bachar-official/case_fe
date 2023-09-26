@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import '../../../domain/entity/app.dart';
 
 const emptyPlace = SizedBox.shrink();
+const okIcon = Icon(
+  Icons.check,
+  color: Colors.green,
+);
 
 final emptySpace = Container();
 
@@ -16,9 +20,11 @@ class SquareAppCard extends StatelessWidget {
   final void Function()? onUploadApk;
   final Future<void> Function(App)? onInstallApk;
   final double progress;
+  final bool? isUpdateAvailable;
   const SquareAppCard(
       {required this.app,
       required this.progress,
+      this.isUpdateAvailable,
       required this.onInstallApk,
       super.key,
       required this.baseUrl,
@@ -32,26 +38,32 @@ class SquareAppCard extends StatelessWidget {
         showDialog(
             context: context,
             builder: (context) => AppInfoDialog(
-                app: app, baseUrl: baseUrl, onInstallApk: onInstallApk));
+                  app: app,
+                  baseUrl: baseUrl,
+                  onInstallApk: onInstallApk,
+                  isUpdateAvailable: isUpdateAvailable,
+                ));
       },
       child: Card(
         child: Stack(
           alignment: Alignment.topRight,
           children: [
-            IconButton(
-              onPressed: app.apk.isEmpty
-                  ? null
-                  : onInstallApk != null
-                      ? progress != 0
-                          ? null
-                          : () async => await onInstallApk!(app)
-                      : () => showDialog(
-                            context: context,
-                            builder: (context) =>
-                                DownloadDialog(app: app, baseUrl: baseUrl),
-                          ),
-              icon: const Icon(Icons.download),
-            ),
+            isUpdateAvailable ?? true
+                ? IconButton(
+                    onPressed: app.apk.isEmpty
+                        ? null
+                        : onInstallApk != null
+                            ? progress != 0
+                                ? null
+                                : () async => await onInstallApk!(app)
+                            : () => showDialog(
+                                  context: context,
+                                  builder: (context) => DownloadDialog(
+                                      app: app, baseUrl: baseUrl),
+                                ),
+                    icon: const Icon(Icons.download),
+                  )
+                : okIcon,
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

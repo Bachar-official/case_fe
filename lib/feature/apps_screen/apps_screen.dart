@@ -74,6 +74,8 @@ class AppsScreen extends ConsumerWidget {
                         manager.isThisAppIsntalling(state.apps.elementAt(index))
                             ? state.downloadProgress
                             : 0,
+                    isUpdateAvailable:
+                        manager.isUpdateAvailable(state.apps.elementAt(index)),
                     app: state.apps.elementAt(index),
                     onInstallApk: kIsWeb ? null : manager.installApkNetwork,
                     baseUrl: manager.baseUrl,

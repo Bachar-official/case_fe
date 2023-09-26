@@ -16,6 +16,10 @@ class AppsStateHolder extends StateNotifier<AppsState> {
     state = state.copyWith(apps: apps);
   }
 
+  void setInstalledApps(List<App> installedApps) {
+    state = state.copyWith(installedApps: installedApps);
+  }
+
   void setLoading(bool isLoading) {
     state = state.copyWith(isLoading: isLoading);
   }

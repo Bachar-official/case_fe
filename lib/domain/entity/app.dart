@@ -35,6 +35,13 @@ class App {
       version: version,
       apk: apk ?? this.apk);
 
+  App changeWith({String? version, String? description, String? name}) => App(
+      apk: apk,
+      version: version ?? this.version,
+      description: description ?? this.description,
+      name: name ?? this.name,
+      package: package);
+
   @override
   String toString() =>
       'App with name $name, package $package, version $version, iconPath $iconPath, apkLength: ${apk.length}';
